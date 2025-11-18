@@ -1,0 +1,3 @@
+mysqld --initialize --basedir="C:/DevTools/mysql8" --datadir="C:/DevTools/mysql8/data"
+
+ALTER USER 'root'@'localhost' identified with mysql_native_password by '1234'
