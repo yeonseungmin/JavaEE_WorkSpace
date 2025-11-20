@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8";>
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+input[type=text], input[type=password] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+input[type=button] {
+  background-color: #04AA6D;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=button]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+</style>
+<script>
+/*
+ *html 태그요소에 지금까지 작성해왔던 이벤트 핸들러를 , js 프로그래밍 언어로 작성해보자. 
+ */
+
+ 
+ function send(){
+	//문서내의 form요소를 이용하여 서버로 데이터 전송
+	let form1 = document.getElementById("form1");
+	form1.method ="post"; // 서버에 데이터를 보내기 위한 HTTP 전송방법 중 하나.
+	form1.action="/member/join";// 폼양식을 전송할 요청 주소(서블릿 매핑 주소를 넣을예정)
+	form1.submit();//
+}
+ // bt_send 는 자바 스크립트 보다도 아래쪽에 위치함으로 , 아직 읽혀지지 않을것이므로
+ // 함수로 실행을 막아놓고 원하는 시점에 함수를 호출하자.
+ function init(){
+ 	let bt_send = document.getElementById("bt_send");
+	
+}
+// =<body onLoad = "function(){}>"
+ window.addEventListener("load",function(){
+	 
+	 // <button onClick=""> 원래 바디쪽에 할것을 js 코드로 구현
+	bt_send.addEventListener("click",function(){
+	 //alert("나 눌렀어?");
+	 //폼 양식에 입력한 모든 데이터를 서버로 전송!!
+		send();
+	});
+ });
+</script>
+</head>
+<body >
+
+<h3>Contact Form</h3>
+
+<div class="container">
+  <form id="form1">
+    
+    <input type="text"  name="id" placeholder="Your ID">
+    <input type="password"  name="pwd" placeholder="Your PassWord">    
+    <input type="text"  name="name" placeholder="Your name..">
+    <input type="text"  name="email" placeholder="Your email..">
+    
+    <input type ="button" value="Submit" id ="bt_send">
+    <!-- 타입이 submit 이면 서버로 무조건 전송 따라서 연습시 button 태그로 교체 -->
+
+  </form>
+</div>
+
+</body>
+</html>
