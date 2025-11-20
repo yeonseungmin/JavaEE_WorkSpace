@@ -21,7 +21,7 @@ import javax.mail.internet.MimeMessage;
 public class EmailManager {
 	String host ="smtp.gmail.com"; //사용하고자 하는 메일 주소
 	String user = "to20864548@gmail.com";//메일 서버의 사용자 계정
-	String passward = "rqsh wfyc lsgw bqzq";//앱비밀번호
+	String password = "rqsh wfyc lsgw bqzq";//앱비밀번호
 	Properties props =new Properties(); // java.util.map의 자식 key-value 쌍을 갖는 데이터 형식
 	
 	//메일 발송 메서드 
@@ -40,7 +40,7 @@ public class EmailManager {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
 				// TODO Auto-generated method stub
-				return new PasswordAuthentication(user,passward);
+				return new PasswordAuthentication(user,password);
 			}
 		});
 		//제목, 내용 등의 메일작성
