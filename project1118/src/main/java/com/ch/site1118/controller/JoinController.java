@@ -87,6 +87,9 @@ public class JoinController extends HttpServlet{
 				if(result != 0) {
 					out.print("가입성공");
 					emailManager.send(email);//받는사람주소
+					//회원 목록 페이지 보여주기 select~~
+					
+					
 				}else {
 					out.print("가입실패");
 				}

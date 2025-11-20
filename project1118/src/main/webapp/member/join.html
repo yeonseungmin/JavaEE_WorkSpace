@@ -74,7 +74,13 @@ input[type=button]:hover {
 
 <div class="container">
   <form id="form1">
-    
+    <!-- 
+    html 에서 id,name 의 공통점 및 차이점
+    공통점 : 문서 내의 요소들간의 구분을 위함
+		 	단,id는 문서내의 중복 허용 X
+    차이점 :	name 은 중복O ,만일 중복될경우 DOM화 되어질때 배열로 생성됨.
+    		,또한 name은 폼양ㅇ식을 서버로 전송할때
+     -->
     <input type="text"  name="id" placeholder="Your ID">
     <input type="password"  name="pwd" placeholder="Your PassWord">    
     <input type="text"  name="name" placeholder="Your name..">
