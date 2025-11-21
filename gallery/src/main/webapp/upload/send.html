@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+	<script>
+	addEventListener("load",function(){
+		document.getElementById("bt_send").addEventListener("click",function(){
+			document.form1.submit();
+		});
+	});
+
+	</script>
+</head>
+<body>
+<pre>
+	서버로 파일을 전송하는 업로드라는 기술은 java 로 직접 구현할 경우, 개발자가 네트워크 통신,
+	IO(입출력), FILE 등을 제어해야 한다., 따라서 실무에서는 이미 누군가가 제작해 놓은 라이브러리 이용
+	[종류]
+	유료 -
+	무료 - Apache-FileUpload컴포넌트,
+			Oreilly-Cos.jar (IT출판사에서Servlet책을 발간하며 만듬)[servlets.com]
+	서버로 일반 텍스트가 아닌, 이미지, 동영상과 같은 파일(인간이 해석할수 없는 유형의 파일 : 바이너리 파일)
+	반드시 POST 방식으로 전송해야 하며 특히나 incoding 타입도 multipart/form-data 라는 형식을 지정해야 한다.
+	이때 multipart 의 의미는 서버로 전송하고자 하는 미디어 타입이 텍스트 뿐만 아니라 , 바이너리도 섞여 있는 복합유형을 의미
+</pre>
+
+<div>
+	<form name="form1" method="post" enctype="multipart/form-data" action="/upload">
+		<div>
+			<input type="text" placeholder = "사진 제목을 입력" name = "title"><br>
+		</div>
+		<div>
+			<!-- 파일 컴퍼넌트에 name 을 부여하지 않으면 서버측에서 파라미터가 없다고 간주하여 업로드 수행불가 -->
+			이미지를 선택하세요<input type="file" name ="photo"><br>	
+		</div>
+		<div>
+			<button type="button" id="bt_send">서버로 업로드</button><br>
+		</div>
+	</form>
+</div>	
+</body>
+</html>
