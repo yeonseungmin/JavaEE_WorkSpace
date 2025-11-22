@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+	<script>
+	addEventListener("load",function(){
+		document.getElementById("bt_send").addEventListener("click",function(){
+			document.form1.submit();
+		});
+	});
+
+	</script>
+</head>
+<body>
+<div>
+	<form name="form1" method="post" enctype="multipart/form-data" action="/upload">
+		<div>
+			<input type="text" placeholder = "사진 제목을 입력" name = "title"><br>
+		</div>
+		<div>
+		<input type = "text" placeholder ="고객 명을 입력하세요" name ="cusname">
+		</div>
+		
+		<div>
+			<!-- 파일 컴퍼넌트에 name 을 부여하지 않으면 서버측에서 파라미터가 없다고 간주하여 업로드 수행불가 -->
+			이미지를 선택하세요<input type="file" name ="photo"><br>	
+		</div>
+		<div>
+			<button type="button" id="bt_send">서버로 업로드</button><br>
+		</div>
+	</form>
+</div>	
+</body>
+</html>
