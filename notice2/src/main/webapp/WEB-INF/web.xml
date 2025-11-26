@@ -12,5 +12,24 @@
 		<servlet-name>registServlet</servlet-name>
 		<url-pattern>/notice/regist</url-pattern>
 	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>deleteServlet</servlet-name>
+		<servlet-class>com.ch.notice2.notice.DeleteServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>deleteServlet</servlet-name>
+		<url-pattern>/notice/delete</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>editServlet</servlet-name>
+		<servlet-class>com.ch.notice2.notice.EditServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>editServlet</servlet-name>
+		<url-pattern>/notice/edit</url-pattern>
+	</servlet-mapping>
+
 </web-app>
 
