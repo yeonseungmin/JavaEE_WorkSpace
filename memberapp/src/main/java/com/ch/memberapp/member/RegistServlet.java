@@ -47,7 +47,7 @@ public class RegistServlet extends HttpServlet{
 					String sql = "insert into member(id,pwd,name) values(?,?,?)";
 					pstmt = con.prepareStatement(sql);
 					pstmt.setString(1, id);
-					pstmt.setString(2, ShaManager.getHash("pwd"));
+					pstmt.setString(2, ShaManager.getHash(pwd));
 					pstmt.setString(3, name);
 					
 					int result = pstmt.executeUpdate();
@@ -64,6 +64,7 @@ public class RegistServlet extends HttpServlet{
 						//가입 이메일 발송(어느쪽이든 상관없음 왜? Servlet 특성)
 					}
 					tag.append("</script>");
+					out.print(tag.toString());//스트림에 스크립트 적용
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
