@@ -14,18 +14,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ch.notice2.domain.NoticeDTO;
+import com.ch.notice2.repository.NoticeDAO;
 import com.mysql.cj.x.protobuf.MysqlxCrud.Insert;
 
 public class RegistServlet  extends HttpServlet{
+	
+	// 다른 로직은 포함되어 있지 않고 , 오직 DB와 관련 CRUD 만을 담당하는 중립적 객체를 사용하자.
+	NoticeDAO noticeDAO = new NoticeDAO();
 	//Html로 부터 글쓰기 요청을 받는 서블릿 정의
 	//jsp는 사실 서블릿 이므로 현재 서블릿의 역할을 대신할 수도 있다.
 	//하지만, jsp 자체가 서블릿의 디자인 능력을 보완하기 위해 나온 기술이므로,
 	// 현재 서블릿에는 servlet 이 좀더 적합하다.
-	String url ="jdbc:mysql://localhost:3306/java";
-	String user = "servlet";
-	String pwd ="1234";
-	Connection con;	//접속 수행 객체
-	PreparedStatement pstmt;	//쿼리문 수행하는 객체
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//클라이언트가 전송한 파라미터를 받자
@@ -45,56 +45,20 @@ public class RegistServlet  extends HttpServlet{
 		
 		//mysql의 java db 안에 notice 에 insert !!!
 		//필요한 라이브러리가 있을경우 maven 빌드 툴에서 해결하자.
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			out.print("드라이버 로드성공");
-			con=DriverManager.getConnection(url,user,pwd);
-			if(con ==null) {
-				out.println("con접속실패");
-			}else {
-				out.println("con접속 성공");
-				
-				//쿼리문 수행
-				String sql = "Insert into notice(title, writer, content) values(?,?,?)";
-				pstmt=con.prepareStatement(sql); //pstmt 인스턴스 얻기
-				pstmt.setString(1, title);
-				pstmt.setString(2, writer);
-				pstmt.setString(3, content);
-				
-				//insert 실행 (DML 일 경우 executeUpdate() 호출, 반환값은 레코드 수가 반환 insert는 1을 반환)
-				int result = pstmt.executeUpdate();
-				if(result <1) {
-					out.println("insert실패");
-				}else {
-					out.println("insert성공");
-					// 지정한 브라우저로 다시 재접속 
-					response.sendRedirect("/notice/list.jsp");
-				}
-			}
-		} catch (ClassNotFoundException e) {
-			out.print("드라이버 로드 실패");
+		NoticeDTO noticeDTO = new NoticeDTO();
+		noticeDTO.setTitle(title);
+		noticeDTO.setWriter(writer);
+		noticeDTO.setContent(content);
+		//성공실패 여부
+		int result = noticeDAO.regist(noticeDTO);
+		out.print("<script>");
+		if(result <1) {
+			out.print("alert('등록실패');");
+			out.print("history.back();");
+		}else {
+			out.print("alert('등록성공');");
+			out.print("location.href='/notice/list.jsp';");
 		}
-			catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally {
-			if(pstmt!=null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			if(con!=null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		
+		out.print("</script>");
 	}
 }
