@@ -1,9 +1,16 @@
 package com.ch.notice2.gui;
 
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -33,6 +40,71 @@ public class RegistForm extends JFrame{
 		this.add(bt);
 		
 		this.setVisible(true);	//디폴트가 안보이므로 , 보이게
+		
+		//버튼에 클릭이벤트 구현하기
+		bt.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				regist();
+				
+			}
+		});
+	}
+	// 게시물 등록
+	public void regist() {
+		Connection con = null;// 지역변수는 반드시 초기화 (컴파일러가 자동으로 초기화 하지않음)
+		PreparedStatement pstmt = null;
+		
+		try {
+			//드라이버 로드
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			System.out.println("드라이버로드 성공");
+			System.out.println("동훈이 뿌잉 ><");
+			System.out.println("태호 뿌잉 ><");
+			//접속
+			con= DriverManager.getConnection("jdbc:mysql://localhost:3306/java","servlet","1234");
+			System.out.println(con);
+			
+			//쿼리날리기
+			String sql = "insert into notice(title, writer, content) values(?,?,?)";
+			pstmt=con.prepareStatement(sql);
+			pstmt.setString(1,title.getText() );
+			pstmt.setString(2, writer.getText());
+			pstmt.setString(3, content.getText());
+			
+			int result = pstmt.executeUpdate();
+			if(result <1) {
+				JOptionPane.showMessageDialog(this, "실패");
+			}else {
+				JOptionPane.showMessageDialog(this, "성공");
+			}
+			
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 로드 실패");
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}if(con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		//자원해제
 	}
 	
 	public static void main(String[] args) {
