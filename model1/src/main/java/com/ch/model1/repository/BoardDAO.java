@@ -69,6 +69,7 @@ public class BoardDAO {
 		}
 		return result;
 	}
+	
 
 	// Read(select)
 	public List selectAll() {
@@ -107,38 +108,92 @@ public class BoardDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			// 주의 기존 JDBC 코드는 다 사용한 커넥션을 닫았지만, 풀로부터 얻어온 커넥션은 닫으면 안됨..
-			if (con != null) {
-				try {
-					// 이 객체는 DataSource 구현체로부터 얻어온 Connection 이기 때문에 close() 메서드에 의해
-					// 일반적 JDBC의 닫는 close()가 아님
-					con.close();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			pool.freeConnection(con, pstmt, rs);
 		}
 		return list;
 	}
-
+	
+	//레코드 한건 가져오기
+	public BoardDTO select(int board_id) {
+		//쿼리 실행을 하기 위한 데이터 베이스 접속은 현재 코드에서 시도하지말고
+		// 서버 가동과 동시에 확보해 놓은 커넥션풀로부터 가져오자
+		Connection con = pool.getConnection();
+		PreparedStatement pstmt=null;
+		ResultSet rs = null;
+		BoardDTO boardDTO =null;
+		
+		try {
+			String sql = "select* from board where board_id =?";
+			pstmt=con.prepareStatement(sql);
+			pstmt.setInt(1, board_id);
+			rs=pstmt.executeQuery();	//select문 실행!!
+			
+			//rs 가 죽어도 상관없게 하려면, 게시물 1건을 표현할 수 있는 대체제를 사용해야 함
+			//DB의 레코드 1건은 java 언어에서 DTO 인스턴스 한개와 매칭이된다.
+			if(rs.next()) {//next()가 true 인 경우 즉 쿼리실행에 의해 조건에 맞는 레코드가 존재할 때만 DTO 를 반납
+				boardDTO = new BoardDTO();
+				boardDTO.setBoard_id(rs.getInt("board_id"));
+				boardDTO.setTitle(rs.getString("title"));
+				boardDTO.setWriter(rs.getString("writer"));
+				boardDTO.setContent(rs.getString("content"));
+				boardDTO.setRegdate(rs.getString("regdate"));
+				boardDTO.setHit(rs.getInt("hit"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			pool.freeConnection(con, pstmt, rs);
+		}
+		return boardDTO;
+	
+	}
 	// Update
-
+	public int update(BoardDTO boardDTO) {
+		Connection con =null;
+		PreparedStatement pstmt =null;
+		int result =0;	//쿼리 실행 결과를 반환할 지역변수, 지역변수이다보니 개발자가 직접 초기화 해줘야 한다.
+		con =pool.getConnection();
+		String sql= "update board set title=?, writer=?, content=? where board_id=?";
+		
+		try {
+			pstmt=con.prepareStatement(sql);
+			pstmt.setString(1, boardDTO.getTitle());
+			pstmt.setString(2, boardDTO.getWriter());
+			pstmt.setString(3, boardDTO.getContent());
+			pstmt.setInt(4, boardDTO.getBoard_id());
+			
+			result=pstmt.executeUpdate(); //DML 수행
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return result;
+	}
+	
 	// Delete
+	public int delete(int board_id ) {
+		Connection con=null;
+		PreparedStatement pstmt =null;
+		con = pool.getConnection();
+		int result=0;
+		
+		String sql = "delete from board where board_id=?";
+		try {
+			pstmt= con.prepareStatement(sql);
+			pstmt.setInt(1, board_id);
+			result=pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			pool.freeConnection(con, pstmt);
+		}
+		return result;
+		
+	}
 }

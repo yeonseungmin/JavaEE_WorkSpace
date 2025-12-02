@@ -6,9 +6,9 @@
 	//총 게시물 수에 대해 산수 계산이 요구된다.
 	
 	//기본 전제 조건 - 총 레코드 수가 잇어야 한다.
-	int totalRecord =2600;//총 레코드 수 (가정)
+	int totalRecord =36;//총 레코드 수 (가정)
 	int pageSize = 10;//한페이지당 보여질 레코드 수
-	int totalpage=(totalRecord%pageSize==0)? totalRecord/pageSize:totalRecord/pageSize+1;
+	int totalpage=(int)Math.ceil((float)totalRecord/pageSize);
 	int blockSize = 10;// 블럭당 보여질 페이지 수
 	int currentPage = 1;// 현재 유저가 보고있는 페이지
 	if(request.getParameter("currentPage")!=null){
@@ -16,7 +16,7 @@
 	}
 	int firstPage = currentPage-(currentPage-1)%blockSize;//블럭당 반복문의 시작 값
 	int lastPage = firstPage+(blockSize-1);// 블럭당 반복문의 끝 값
-	int num = totalRecord - pageSize*(currentPage-1); //페이지당 시작 No.번호 뒤로 갈수록 차감
+	int num = totalRecord - (currentPage-1)*pageSize; //페이지당 시작 No.번호 뒤로 갈수록 차감
 %>
 <%= "totalRecord"+totalRecord+"<br>" %>
 <%= "pageSize"+pageSize+"<br>" %>
