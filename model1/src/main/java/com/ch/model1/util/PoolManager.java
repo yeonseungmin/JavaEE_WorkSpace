@@ -14,8 +14,9 @@ import javax.sql.DataSource;
 //예) JNDI 명칭이 바뀌거나, 연동할 DB의 종류가 바뀌는 등 ,, 외부의 어떤 변화원인에 의해 코드가 영향을 많이 받으면 안됨..
 // 따라서 앞으로는 커넥션풀로부터 Connection 을 얻거나 반납하는 중복된 코드는 아래의 클래스로 처리하면 유지보수성이 올라감
 public class PoolManager extends HttpServlet{
+	private static PoolManager instance; //개발자들 사이에 통용되는 싱글톤 변수명 : instance 
 	DataSource ds;
-	public PoolManager() {
+	private PoolManager() {
 		try {
 			InitialContext context = new InitialContext();
 			ds=(DataSource)context.lookup("java:comp/env/jndi/mysql");
@@ -23,6 +24,15 @@ public class PoolManager extends HttpServlet{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public static PoolManager getInstance() {
+		//클래스변수인 instance 변수에 아무것도 존재하지 않을때만 직접 한번만 new 해준다.
+		//PoolManager를 싱글턴으로 선언하면, 자바엔터프라자 개발에서 수많은 DAO들이
+		//PoolManager를 매번 인스턴스 생성하는 낭비를 방지할 수 있다.
+		if(instance == null) {
+			instance = new PoolManager();
+		}
+		return instance;
 	}
 	
 	//외부의 DAO 들이 직접 Connection을 얻는 코드를 작성하지 않게 하려면

@@ -1,4 +1,9 @@
+<%@page import="com.ch.model1.dto.Member2DTO"%>
+<%@page import="com.ch.model1.repository.Member2DAO"%>
 <%@ page contentType="text/html; charset=UTF-8"%>
+<%!
+	Member2DAO dao =new Member2DAO();
+%>
 <%
 	//스크립틀릿 (이 jsp 가 서블릿으로 변환될때 service(request, response)메서드 영역)
 	// 넘어온 파라미터를 받아서 mysql의 member2 테이블에 insert!!
@@ -15,5 +20,19 @@
 	out.print("name="+name+"<br>");
 	out.print("email="+email+"<br>");
 	
+	Member2DTO dto = new Member2DTO();
+	dto.setId(id);
+	dto.setName(name);
+	dto.setEmail(email);
 	
+	int result = dao.insert(dto);
 %>
+<script>
+	<%if(result<1){ %>
+		out.print("실패");
+		history.back();
+	<% }else{%>
+		location.href = "/ajax/main.jsp";
+	<% }%>
+
+</script>

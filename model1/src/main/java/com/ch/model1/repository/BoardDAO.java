@@ -22,7 +22,8 @@ import javax.naming.NamingException;
 public class BoardDAO {
 	// Create(insert)
 	// 글 1건을 등록하는 매서드
-	PoolManager pool = new PoolManager();
+	// 싱글턴 매서드를 작성했기에 이곳에서 new 하지 않는다.
+	PoolManager pool = PoolManager.getInstance();
 
 	public int insert(BoardDTO boarddto) {// ******개발시 파라미터의 수가 많을경우 DTO를 만들어 사용한다. ********
 		// 이 메서드 호출시 마다 접속을 일으키는것이 아니라 접속자가 없더라도

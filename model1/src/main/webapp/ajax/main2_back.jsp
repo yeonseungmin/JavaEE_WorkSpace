@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,11 +34,12 @@
 </style>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
-    // 문서가 로드되면 두개의 버튼에 대해 이벤트 연결
-    // 화살표 함수 - 기존 함수 정의를 줄이려고 function(){} -> ()=>{}
+// 문서가 로드되면 두개의 버튼에 대해 이벤트 연결
+// 화살표 함수 - 기존 함수 정의를 줄이려고 function(){} -> ()=>{}
+
 
     $(()=>{
-        // 동기버튼에 클릭 이벤트 연결
+    	// 동기버튼에 클릭 이벤트 연결
         $($("form button")[0]).click(()=>{
             $("form").attr({
                 action:"/ajax/regist.jsp",
@@ -49,7 +51,7 @@
     $(()=>{
         // 비동기버튼에 클릭 이벤트 연결
         $($("form button")[1]).click(()=>{
-            alert("비동기 방식의 요청시도");   
+            alert("비동기 방식의 요청시도");   
         });
     });
     });
@@ -63,8 +65,8 @@
 			<input type="text" placeholder="ID" name="id">
             <input type="text" placeholder="Name" name="name">
             <input type="text" placeholder="Email" name="email">
-            <button>동기 등록</button>
-            <button>비동기등록</button>
+            <button>동기 등록</button>
+            <button>비동기등록</button>
             </form>
 		</div>
 		<div class = content></div>

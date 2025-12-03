@@ -1,6 +1,6 @@
 package com.ch.model1.dto;
 
-public class Member2 {
+public class Member2DTO {
 	/*
 	 * 아래의 클래스는 로직을 작성하기 위함이 아니라, 오직 Member2라는 테이블과의 CRUD에
 	 * 사용하기 위한 데이터를 담는 목적의 클래스일 뿐이다.(dummy) DTO 라 한다.
