@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+    .container{
+        width: 650px;
+        height: 500px;
+        background-color: aliceblue;
+        margin: auto;
+    }
+    .aside{
+        width: 150px;
+        height: 100%;
+        background-color: antiquewhite;
+        float: left;
+    }
+    .content{
+        width: 500px;  
+        height: 100%;
+        background-color: rgb(201, 163, 106);
+        float: left;
+    }
+    .aside input{
+        width: 90%;
+        
+    }
+    .aside button{
+        width: 45%;
+        height: 10%;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    // 문서가 로드되면 두개의 버튼에 대해 이벤트 연결
+    // 화살표 함수 - 기존 함수 정의를 줄이려고 function(){} -> ()=>{}
+
+    $(()=>{
+        // 동기버튼에 클릭 이벤트 연결
+        $($("form button")[0]).click(()=>{
+            $("form").attr({
+                action:"/ajax/regist.jsp",
+                method:"post"
+            }); 
+            $("form").submit();
+        });
+
+    $(()=>{
+        // 비동기버튼에 클릭 이벤트 연결
+        $($("form button")[1]).click(()=>{
+            alert("비동기 방식의 요청시도");   
+        });
+    });
+    });
+
+</script>
+</head>
+<body>
+	<div class =container>
+		<div class = aside>
+            <form >
+			<input type="text" placeholder="ID" name="id">
+            <input type="text" placeholder="Name" name="name">
+            <input type="text" placeholder="Email" name="email">
+            <button>동기 등록</button>
+            <button>비동기등록</button>
+            </form>
+		</div>
+		<div class = content></div>
+	
+	</div>
+
+</body>
+</html>
