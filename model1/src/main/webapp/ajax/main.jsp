@@ -9,6 +9,7 @@
 <%
 	List<Member2DTO> memberList = dao.selectAll();
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -64,11 +65,13 @@
 			//서버가 보내온 데이터를 담고 있는 속성인 responseText를 이용해보자.
 			//console.log("서버로부터 받은 목록 정보는?"+xhttp.responseText);
 			//서버로부터 전송되어온 문자열을 대상으로 원하는 값 추출하기
-			let obj=JSON.parse(xhttp.responseText); // 문자열을 해석하여 JSON 구분 형식에 맞을경우 객체 리터럴로 전환해줌
+			let memberList=JSON.parse(xhttp.responseText); // 문자열을 해석하여 JSON 구분 형식에 맞을경우 객체 리터럴로 전환해줌
 			// 정말로 obj 가 자바스크립트의 인스턴스라면, 객체.속성을 접근할 수 있따.
 			//따라서 검증해보자.
-			console.log("email은 ", obj.email);
-			
+			//console.log("email은 ", obj.email);
+			console.log("서버가 보내온",xhttp.responseText);
+			console.log("서버가 보낸 문자열을 파싱한 결과(객체화)",memberList);
+			//서버가 보내온 데이터가 다행이도 JSON 표기법을 준수했으므로 , 지금부터 객체화 시켜 화면에 렌더링해보자.
 			
 			
 		}

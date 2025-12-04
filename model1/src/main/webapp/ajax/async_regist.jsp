@@ -1,3 +1,4 @@
+<%@page import="java.lang.reflect.Member"%>
 <%@page import="org.apache.tomcat.util.json.JSONFilter"%>
 <%@page import="java.util.List"%>
 <%@page import="com.ch.model1.dto.Member2DTO"%>
@@ -38,7 +39,9 @@
 	
 	//해결책: 서버에서는 화면전체를 보내지 말고, 데이터만 보내면 클라이언트는 js로 동적 처리
 	// 게시물 목록 가져오기!!
-	List<Member2DTO> list =dao.selectAll();
+	
+/* 	List<Member2DTO> list =dao.selectAll(); */
+	
 	//클라이언트에게 목록 데이터 보내기
 	//out.print("id=동훈,name=동훈,email=동훈");
 	//out.print("id*동훈&name*동훈&email*동훈");
@@ -50,16 +53,29 @@
 	// 해결책 : 전세계 개발자들이 사용하는 표준 형식(JSON )을 사용하자.
 	//		JSON 이란? 문자열 내의 데이터가 유달리 자바스크립트의 객체 리터럴 정의 기법을 따르는 경우, JSON 문자열이라 한다.
 			
-	//아래의 JSON 문자열을 말 그대로 문자열 이므로 자바는 그냥 String 으로 이해		
+			
+/* 	//아래의 JSON 문자열을 말 그대로 문자열 이므로 자바는 그냥 String 으로 이해		
 	StringBuffer data =new StringBuffer();
-	data.append("{");
-	data.append("\"name\": \"동훈\",");
-	data.append("\"email\": \"똥훈\"");
-	data.append("}");
-
+	
+	data.append("[");
+	for(int i=0; i<list.size();i++){
+		Member2DTO obj = list.get(i);
+		data.append("{");
+		data.append("\"member2_id\":"+obj.getMember2_id()+" ,");
+		data.append("\"id\":\""+obj.getId() +"\",");
+		data.append("\"name\":\""+obj.getName() +"\",");
+		data.append("\"email\":\""+obj.getEmail()+"\"");
+		data.append("}");
+		if(i+1 < list.size()){
+		data.append(",");
+		}
+	}
+	data.append("]");
 	System.out.println(data.toString());
 	
-	out.print(data.toString());//클라이언트인 웹브라우저에게 보내기
+	out.print(data.toString());//클라이언트인 웹브라우저에게 보내기 */
+	
+	
 	// 			{"name": "동훈","email": "똥훈"} 서버가 보내온 데이터는 무조건 문자열이기 때문에 아래의 형ㅅ기이 마치 자바스크립트의
 	//													객체 리터럴로 착각될 수 없다. 결론 : 객체가 아니다!!
 	//													즉, 객체가 아니므로 속성이라는 것도 없으므로 "."으로접근 불가능하다.
