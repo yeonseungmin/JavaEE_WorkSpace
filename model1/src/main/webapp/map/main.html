@@ -42,6 +42,39 @@
         map = new google.maps.Map(document.querySelector(".content"),mapProp);
     }
     
+    //서버로부터 받아온 데이터를 파싱한 결과인 객체를 이용하여 화면에 표현하겠다.
+    function render(data){
+    	console.log("렌더링전 넘겨받은 객체는 ",data);
+    	
+
+
+	  	 let lat=data.response.body.items.item[0].lat;//위도
+	  	 let lng=data.response.body.items.item[0].lot;//경도
+	   	 let pos = new google.maps.LatLng(lat,lng); 
+	  	 
+	  	 //먼저 카메라의 위치부터 수정(맴의 중앙부 교체)
+  	     map.setCenter(pos);    	 
+    	 //구글맵에 마커 표시하기 (API 참고)벤더사가 제작 했으므로 각 벤더사가 제공하는 API 사용해야함
+    	 let marker = new google.maps.Marker({position: pos});
+    	 
+    	 //생성된 마커를 원하는 위치에 표현하기
+   		marker = new google.maps.Marker({
+   			  position:pos,
+   			  animation:google.maps.Animation.BOUNCE
+   			});
+
+
+ 		marker.setMap(map);
+    	 
+	   	 let info = data.response.body.items.item[0].frtrlNm; //산의 이름
+	   	 let infowindow = new google.maps.InfoWindow({
+	   		  content:info
+	   		});
+	
+	   		infowindow.open(map,marker);
+    		
+    }
+    
     //맵 등의 어플리캐이션은 새로고침이 발생해서는 안됨 ! 서버로부터 데이터를 비동기(백그라운드에서)로 가져오자.
     function getList(){
 		   let xhttp = new XMLHttpRequest();
@@ -49,6 +82,11 @@
 		   xhttp.onload=function(){
 			   //서버에서 전송한 문자열 받기!
 			   console.log("서버로부터 받은 문자열은 ",this.responseText);
+			    let obj= JSON.parse(this.responseText);//서버에 가져온 데이터는 직접 사용이 불편한 문자열이므로 , 객체로 전환
+			    console.log("문자열 파싱 결과는",obj);
+			    render(obj);
+			    
+			    
 		   }
 		   xhttp.open("Get","/map/list.jsp");//servlet,jsp 둘다 가능하지만 원칙상 servlet 이맞다. (현재는 jsp로 사용 시간상)
 		   xhttp.send();//비동기 요청 발생!!
