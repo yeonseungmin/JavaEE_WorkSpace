@@ -52,20 +52,7 @@
     	maxWait 10000 ms 단위의 대기시간 =10초
     	
       -->
-      <Resource
-      	name="jndi/mysql"
-      	auth="Container"
-      	type="javax.sql.DataSource"
-      	factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
-      	driverClassName="com.mysql.cj.jdbc.Driver"
-      	url="jdbc:mysql://localhost:3306/java?characterEncoding=UTF-8"
-      	username="servlet"
-      	password="1234"
-      	
-      	maxActive="50"
-      	initalSize="5"
-      	maxWait="10000"
-      	/><!-- javax.sql.DataSource가 바로 커텍션풀 구현체이다. -->
+      <Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" initalSize="5" maxActive="50" maxWait="10000" name="jndi/mysql" password="1234" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/java?characterEncoding=UTF-8" username="servlet"/><!-- javax.sql.DataSource가 바로 커텍션풀 구현체이다. -->
       	
      
     	
@@ -198,7 +185,7 @@
              Note: The pattern used is equivalent to using pattern="common" -->
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs" pattern="%h %l %u %t &quot;%r&quot; %s %b" prefix="localhost_access_log" suffix=".txt"/>
 
-      <Context docBase="notice2" path="/notice2" reloadable="true" source="org.eclipse.jst.jee.server:notice2"/><Context docBase="website" path="/website" reloadable="true" source="org.eclipse.jst.jee.server:website"/><Context docBase="gallery" path="/gallery" reloadable="true" source="org.eclipse.jst.jee.server:gallery"/><Context docBase="project1118" path="/project1118" reloadable="true" source="org.eclipse.jst.jee.server:project1118"/><Context docBase="memberapp" path="/memberapp" reloadable="true" source="org.eclipse.jst.jee.server:memberapp"/><Context docBase="model1" path="/" reloadable="true" source="org.eclipse.jst.jee.server:model1"/></Host>
+      <Context docBase="notice2" path="/notice2" reloadable="true" source="org.eclipse.jst.jee.server:notice2"/><Context docBase="website" path="/website" reloadable="true" source="org.eclipse.jst.jee.server:website"/><Context docBase="gallery" path="/gallery" reloadable="true" source="org.eclipse.jst.jee.server:gallery"/><Context docBase="project1118" path="/project1118" reloadable="true" source="org.eclipse.jst.jee.server:project1118"/><Context docBase="memberapp" path="/memberapp" reloadable="true" source="org.eclipse.jst.jee.server:memberapp"/><Context docBase="model1" path="/model1" reloadable="true" source="org.eclipse.jst.jee.server:model1"/><Context docBase="mybatisapp2" path="/" reloadable="true" source="org.eclipse.jst.jee.server:mybatisapp2"/></Host>
     </Engine>
   </Service>
 </Server>
