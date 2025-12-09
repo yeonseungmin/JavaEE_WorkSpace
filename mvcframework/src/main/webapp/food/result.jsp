@@ -6,7 +6,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h3>당신의 선택한 영화 결과에 대한 메세지</h3>
+	<h3>당신의 선택한 음식 결과에 대한 메세지</h3>
 	<%
 		//jsp의 내장객체(request,response session.out 등이있다.)
 		//session 은 메모리 낭비가 심함.

@@ -11,5 +11,13 @@
 		<url-pattern>/movie</url-pattern>
 	</servlet-mapping>
 
+  	<servlet>
+  		<servlet-name>foodController</servlet-name>
+  		<servlet-class>com.ch.mvcframework.controller.FoodController</servlet-class>
+  	</servlet>
+	<servlet-mapping>
+		<servlet-name>foodController</servlet-name>
+		<url-pattern>/food</url-pattern>
+	</servlet-mapping>
 
 </web-app>

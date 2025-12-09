@@ -2,6 +2,7 @@ package com.ch.mvcframework.controller;
 
 import java.io.IOException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -48,10 +49,21 @@ public class MovieController extends HttpServlet{
 			HttpSession session = request.getSession();
 			//영화에 대한 판단결과는 , 세션이 죽을때까지 함께 생존할 수 있으므로,
 			//이 요청이 종료되어도 그 값을 유지할 수 있다.
-			session.setAttribute("msg", msg);
+//			session.setAttribute("msg", msg);
+			//세션 말고도 데이터를 전달하는 또 다른 방법이 있기 때문에 포워딩을 이용하자.
+			//현재 들어온 요청에 대해 응답을 하지 않은 상태로, 또 다른 서블릿에게 요청을 전달함
+			//이때 지정된 result.jsp의 서블릿의 service()메서드가 호출!!
+			request.setAttribute("msg", msg);//세션과 생명유지 시간만 틀릴뿐 사용방법은 같다.
+			
+			// 현재 서블릿에서 응답을 처리하지 않았기 때문에 request는 죽지않고 result.jsp 의 서블릿까지 생명이 유지됨..
+			RequestDispatcher dis = request.getRequestDispatcher("/movie/model2/result.jsp");
+			dis.forward(request,response);
+			
 			
 			//위의 판단결과를 여기서 출력하면 MVC위배됨 .. 따라서 판단 결과를 별도의 디자인 영역에서 보여줘야 한다!!
-			response.sendRedirect("/movie/model2/result.jsp"); //스크립트를 뿌리면서 디자인 .jsp로 정보를 가져감
+			
+			//아래의 코드는 응답을 하면서 브라우저로 하여금 재접속 하라는 명령이다. 따라서 응답을 하게됨
+//			response.sendRedirect("/movie/model2/result.jsp"); //스크립트를 뿌리면서 디자인 .jsp로 정보를 가져감
 			
 		}
 }
