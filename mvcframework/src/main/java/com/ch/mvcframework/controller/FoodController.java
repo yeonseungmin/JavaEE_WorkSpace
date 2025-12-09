@@ -20,10 +20,10 @@ Model2 - 그 이론을 바탕으로 javaEE기술로 구현해놓은 모델
 					ㄴ 결론 = Servlet 밖에 없음
 					
  Model2 중 컨트롤러의 요건*/
-public class FoodController extends HttpServlet{
+public class FoodController {
 	FoodManager fdmanager = new FoodManager();
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	protected void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//클라이언트의 요청 파라미터 받기
 		request.setCharacterEncoding("utf-8");
 		String food = request.getParameter("food");

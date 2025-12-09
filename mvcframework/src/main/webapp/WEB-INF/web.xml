@@ -3,21 +3,14 @@
   <display-name>mvcframework</display-name>
   
   	<servlet>
-  		<servlet-name>movieController</servlet-name>
-  		<servlet-class>com.ch.mvcframework.controller.MovieController</servlet-class>
+  		<servlet-name>dispatcher</servlet-name>
+  		<servlet-class>com.ch.mvcframework.controller.DispatcherServlet</servlet-class>
   	</servlet>
 	<servlet-mapping>
-		<servlet-name>movieController</servlet-name>
-		<url-pattern>/movie</url-pattern>
+		<servlet-name>dispatcher</servlet-name>
+		<!-- 앞에 어떤경로가 오든 상관없으며, 단 확장자가 ".do" 이면 DispatcherServlet을 만나게 됨 -->
+		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
 
-  	<servlet>
-  		<servlet-name>foodController</servlet-name>
-  		<servlet-class>com.ch.mvcframework.controller.FoodController</servlet-class>
-  	</servlet>
-	<servlet-mapping>
-		<servlet-name>foodController</servlet-name>
-		<url-pattern>/food</url-pattern>
-	</servlet-mapping>
 
 </web-app>
