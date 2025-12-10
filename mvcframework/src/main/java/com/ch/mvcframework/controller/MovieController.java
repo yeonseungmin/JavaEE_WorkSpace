@@ -66,4 +66,16 @@ public class MovieController implements Controller{
 //			response.sendRedirect("/movie/model2/result.jsp"); //스크립트를 뿌리면서 디자인 .jsp로 정보를 가져감
 			
 		}
+
+		@Override
+		public String getViewName() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean isForward() {
+			// TODO Auto-generated method stub
+			return false;
+		}
 }

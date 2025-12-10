@@ -1,12 +1,15 @@
 package com.ch.mvcframework.controller;
 
+import java.awt.ContainerOrderFocusTraversalPolicy;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +34,16 @@ public class DispatcherServlet extends HttpServlet{
 	// 이 서블릿과 관련된 환경 정보를 갖고 있는 객체이다.
 	public void init(ServletConfig config) {
 		try {
-			fis = new FileInputStream("C:\\Workspace\\JavaEE_WorkSpace\\mvcframework\\src\\main\\webapp\\WEB-INF\\Servlet-Mapping.txt");
+			//서블릿의 환경 정보를 가진 객체인 ServletConfig를 활용하여 현재 애플리케이션의 정보를 가진 ServletContext를 얻기
+			ServletContext application=config.getServletContext(); //application의 상위 객체
+			// 현재 웹 애플리케이션이 이클립스 내부 톰켓으로 실행될지, 아니면 실제 서버에서 실행될지 개발자가 알필요가 없어 현재 애플리케이션을
+			//기준으로 파일명만 명시하면, 리눅스건, 맥이건, 윈도우건 상황에 맞게 알아서 경로를 반환..
+			String paramValue=config.getInitParameter("contextConfigLocation");
+			System.out.println(paramValue);
+			String realPath = application.getRealPath(paramValue);
+			System.out.println(realPath);
+			
+			fis = new FileInputStream(realPath);
 			props = new Properties();
 			props.load(fis);// 프로퍼티스가 사용할 스트림 로드
 			
@@ -57,6 +69,7 @@ public class DispatcherServlet extends HttpServlet{
 //	클라이언트의 요청방식이 다양함으로 어떤 요청방식(GET,POST)으로 들어 오더라도, 아래의 매서드 하나로 몰아넣으면 ,
 //	코드는 메서드마다 재 작성할 필요가 없다.
 	protected void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
 		System.out.println("클라이언트 요청 감지");
 		/*
 		 * 모든 컨트롤러의 5대 업무
@@ -108,6 +121,20 @@ public class DispatcherServlet extends HttpServlet{
 			// 즉 자료형은 부모형이지만, 동작은 자식 자료형으로 할 경우 현실의 생물의 다양성을 반영하였다해서 다형성(Polymorphism) 
 			controller.execute(request,response);//메서드 호출 .. (다형성)
 	
+			//DispatcherServlet은 다시 servlet-mapping.txt파일을 검색하여, 실제 jsp 파일을 얻어, 클라이언트에게 응답을 해야함.
+			String viewName = controller.getViewName();
+			
+			String viewPage = props.getProperty(viewName);
+			System.out.println("이요청에 의해 보여질 응답페이지는 "+viewPage);
+			
+			//하위 컨트롤러가 포워딩하라고 부탁한 경우엔 포워딩 처리
+			if(controller.isForward()) {
+				RequestDispatcher dis = request.getRequestDispatcher(viewPage);
+				dis.forward(request, response);
+			}else {
+				response.sendRedirect(viewPage);// 클라이언트로 하여금 재접속 할 것을 응답 정보에 추가
+				
+			}
 			
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -133,5 +160,20 @@ public class DispatcherServlet extends HttpServlet{
 		}
 		
 	}
+	
+	//서블릿의 생명주기 메서드중, 서블릿이 소멸할때 호출되는 메서드 안 destory()재정의
+	//반드시 닫아야 할 자원등을 해제할때 중요하게 사용..
+	public void destory() {
+		if(fis!=null) {
+			try {
+				fis.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
 	
 }

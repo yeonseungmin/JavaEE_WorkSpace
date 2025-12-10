@@ -3,3 +3,18 @@
 
 /movie.do=com.ch.mvcframework.controller.MovieController
 /food.do=com.ch.mvcframework.controller.FoodController
+
+#게시판 컨트롤러 매핑
+/board/regist.do=com.ch.mvcframework.controller.RegistController
+/board/list.do=com.ch.mvcframework.controller.ListController
+/board/detail.do=com.ch.mvcframework.controller.DetailController
+
+#게시판 뷰 페이지 매핑
+#자바 코드안에 뷰 페이지 명을 직접적으로 명시하게 되면 외부 파일의 명칭이 달라질 경우 자바 코드가 영향을 받게 된다.
+#따라서 유지보수성을 위해서는 자바 클래스 안에, 파일명을 직접 등록해서는 안된다.
+#  키= 파일명 으로 뷰 를 매핑한다
+
+#글 등록시에는 list.do 로 들어가야 한다.
+/board/regist/result=/board/list.do
+/board/list/result=/board/list.jsp
+/board/detail/result=/board/detail.jsp

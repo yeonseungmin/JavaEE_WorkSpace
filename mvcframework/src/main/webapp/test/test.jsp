@@ -14,7 +14,14 @@
 	session.setAttribute("id", "yeon");
 	request.setAttribute("hobby", "잠");
 	
-	
+	/*
+		application 의 자료형 ServletContext
+		request 의 자료형 HttpServletRequest
+		session 의 자료형 HttpSession
+	*/
+	//현재 웹 애플리케이션내의 자원의 실제 OS상의 경로를 반환(현재 os 가 리눅스이면 리눅스 경로, 멕이면 멕의 경로, 윈도우면 윈도우 경로)
+	String path = application.getRealPath("WEB-INF/Servlet-Mapping.txt");
+	out.print(path);
 %>
 
 <a href="/test/result.jsp">결과 페이지 전송</a>"
