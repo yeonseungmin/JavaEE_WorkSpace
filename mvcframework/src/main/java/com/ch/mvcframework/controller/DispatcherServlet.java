@@ -3,6 +3,7 @@ package com.ch.mvcframework.controller;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
 import javax.servlet.ServletConfig;
@@ -74,27 +75,62 @@ public class DispatcherServlet extends HttpServlet{
 		String uri = request.getRequestURI();
 		System.out.println("클라이언트가 요청시 사용한 uri는 ="+uri);
 		
-		if(uri.equals("/movie.do")) {
 			//영화 전담 컨트롤러에게 요청 전달~~
 //			MovieController controller = new MovieController();
 //			controller.execute(request, response);
-			String controllerPath=props.getProperty(uri);
-			System.out.println("영화에 동작할 하위 전문 컨트롤러는="+controllerPath);
-		}else if(uri.equals("/food.do")) {
+
 			//음식 전답 컨트롤러에게 요청 전달~~
 //			FoodController controller = new FoodController();
 //			controller.handle(request, response);
-			String controllerPath=props.getProperty(uri);
-			System.out.println("음식에 동작할 하위 전문 컨트롤러는="+controllerPath);
-		}
-		
+
 		/*
 		 * 위의 if,else if문으로 클라이언트의 요청을 1:1로 처리하면 역시나 유지보수성이 떨어진다.
 		 * 해결책) 각 요청을 조건문이 아닌 객체로 처리해야 함 = GOF(디자인 패턴 저자 들)는 Command Pattern + Factory Pattern 을 이용함
 		 * Factory Pattern 이란?  객체의 생성방법에 대해서는 감춰놓고 개발자로 하여금 객체의 인스턴스를 얻어갈 수 있도록 정의하는 클래스 정의법
 		 * */
 		
+		String controllerPath=props.getProperty(uri);
+		System.out.println("영화에 동작할 하위 전문 컨트롤러는="+controllerPath);
 		
+		//여기까지는 하위 컨트롤러의 이름만을 추출한 상태이고 실제 동작하는 클래스 및 인스턴스는 아니다.
+		try {
+			//class : 클래스에 대한 정보를가진 예약어 클래스.. 현재 이 클래스가 보유한 메서드명, 생성자, 속성들
+			Class clazz = Class.forName(controllerPath);//동적으로 로드된다.. (static == method 영역에)
+			//static 영역에 올라온 클래스 원본 코드를 대상으로 인스턴스 1개 생성하기.. new연산자 만이 인스턴스를 만들수 있는 것은 아님..
+			Object obj = clazz.getConstructor().newInstance();//deprecated.. 곧 사라질 명령어다.
+			
+			//메모리에 올라온 하위 컨트롤러 객체의 매서드 호출 
+			//현재 시점에 메모리에 올라온 객체가 MovieController or FoodController인지 알수 없기 때문에,
+			//이들의 최상위 객체인 Controller로 형변환 한다!!
+			Controller controller = (Controller)obj;
+			//아래의 메서드 호출의 경우, 분명 부모 형인 Controller형의 변수로 메서드를 호출하고 있으나.
+			// 자바의 문법 규칙상 자식이 부모의 메서드를 오버라이드 한경우 자식의 메서드를 호출한다.
+			// 즉 자료형은 부모형이지만, 동작은 자식 자료형으로 할 경우 현실의 생물의 다양성을 반영하였다해서 다형성(Polymorphism) 
+			controller.execute(request,response);//메서드 호출 .. (다형성)
+	
+			
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
