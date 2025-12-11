@@ -6,15 +6,16 @@
 <!-- 별칭 등록 -->
 <typeAliases>
 	<typeAlias type="com.ch.mvcframework.dto.Board" alias="Board"/>
+	<typeAlias type="com.ch.mvcframework.dto.Dept" alias="Dept"/>
+	<typeAlias type="com.ch.mvcframework.dto.Emp" alias="Emp"/>
 </typeAliases>
   <environments default="development">
     <environment id="development">
       <transactionManager type="JDBC"/>
-      <dataSource type="POOLED">
-        <property name="driver" 			value="com.mysql.cj.jdbc.Driver"/>
-        <property name="url" 				value="jdbc:mysql://localhost:3306/java"/>
-        <property name="username" 	value="servlet"/>
-        <property name="password" 	value="1234"/>
+      <dataSource type="JNDI">
+      <!-- java:com/env/jndi/mysql --><!-- mybatis가 tomcat의 커넥션 풀 사용 -->
+        <property name="data_source" 	value="java:comp/env/jndi/mysql"/>
+
       </dataSource>
     </environment>
   </environments>
@@ -22,6 +23,8 @@
 	<mappers>
 	
     <mapper resource="com/ch/mvcframework/mybatis/BoardMapper.xml"/>
+    <mapper resource="com/ch/mvcframework/mybatis/DeptMapper.xml"/>
+    <mapper resource="com/ch/mvcframework/mybatis/EmpMapper.xml"/>
 
     
   </mappers> 

@@ -52,8 +52,20 @@
     	maxWait 10000 ms 단위의 대기시간 =10초
     	
       -->
-      <Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" initalSize="5" maxActive="50" maxWait="10000" name="jndi/mysql" password="1234" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/java?characterEncoding=UTF-8" username="servlet"/><!-- javax.sql.DataSource가 바로 커텍션풀 구현체이다. -->
-      	
+      	<!-- javax.sql.DataSource가 바로 커텍션풀 구현체이다. -->
+      	<Resource
+   		auth="Container"
+	    	driverClassName="com.mysql.cj.jdbc.Driver"
+	    	factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+	    	initialSize="5"
+	    	maxActive="50"
+	    	maxWait="10000"
+	    	name="jndi/mysql"
+	    	password="1234"
+	    	type="javax.sql.DataSource"
+	    	url="jdbc:mysql://localhost:3306/java?characterEncoding=UTF-8"
+	    	username="servlet"
+	    	/>
      
     	
     

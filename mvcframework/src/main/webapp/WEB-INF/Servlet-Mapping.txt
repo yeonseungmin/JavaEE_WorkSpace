@@ -11,6 +11,8 @@
 /board/delete.do=com.ch.mvcframework.controller.DeleteController
 /board/edit.do=com.ch.mvcframework.controller.UpdateController
 
+#사원관련 컨트롤러 매핑
+/emp/regist.do=com.ch.mvcframework.emp.controller.RegistController
 
 #게시판 뷰 페이지 매핑
 #자바 코드안에 뷰 페이지 명을 직접적으로 명시하게 되면 외부 파일의 명칭이 달라질 경우 자바 코드가 영향을 받게 된다.
