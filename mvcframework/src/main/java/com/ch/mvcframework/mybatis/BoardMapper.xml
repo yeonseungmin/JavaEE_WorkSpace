@@ -27,4 +27,15 @@
 <select id ="select" parameterType="int" resultType="Board">
 		select board_id, title, writer,content,regdate,hit from board where board_id=#{board_id}
 </select>
+
+<!-- 1건 삭제 -->
+<delete id="delete" parameterType="int">
+	delete from board where board_id=#{board_id}
+</delete>
+
+<!-- 1건 수정 -->
+<update id="update" parameterType="Board"	>
+	update board set title=#{title},writer=#{writer},content=#{content} where board_id=#{board_id}
+</update>
+
 </mapper>

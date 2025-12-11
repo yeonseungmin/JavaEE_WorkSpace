@@ -69,7 +69,7 @@ public class DispatcherServlet extends HttpServlet{
 //	클라이언트의 요청방식이 다양함으로 어떤 요청방식(GET,POST)으로 들어 오더라도, 아래의 매서드 하나로 몰아넣으면 ,
 //	코드는 메서드마다 재 작성할 필요가 없다.
 	protected void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("utf-8");
+		
 		System.out.println("클라이언트 요청 감지");
 		/*
 		 * 모든 컨트롤러의 5대 업무

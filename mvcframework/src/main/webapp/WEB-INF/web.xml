@@ -2,6 +2,25 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
   <display-name>mvcframework</display-name>
   
+  <!-- javaEE 기술에서는 서블릿의 요청 처리보다 앞선 객체가 지원되는데, 이 객체를 정의해 놓으면 무조건 요청이 
+  		이 객체를 거쳐서 간다고 하여 필터라 한다..
+  		필터의 주 용도 - 웹 어플리케이션 방문시 제일 처음에 거쳐가게 되므로, 접속자 수 통계, 인코딩처리, 등의 공통적 처리에 유용...
+  		
+  		정의 주의할 점) 서블릿 보다 반드시 앞서서 정의 
+  	 -->
+  	 <filter>
+  	 	<filter-name>encodingFilter</filter-name>
+  	 	<filter-class>com.ch.mvcframework.dto.web.filter.CharacterEncodingFilter</filter-class>
+  	 	<init-param>
+  	 		<param-name>encoding</param-name>
+  	 		<param-value>UTF-8</param-value>
+  	 	</init-param>
+  	 </filter>
+  	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+  	</filter-mapping>
+  	
   	<servlet>
   		<servlet-name>dispatcher</servlet-name>
   		<servlet-class>com.ch.mvcframework.controller.DispatcherServlet</servlet-class>

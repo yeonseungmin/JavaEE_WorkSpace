@@ -8,6 +8,9 @@
 /board/regist.do=com.ch.mvcframework.controller.RegistController
 /board/list.do=com.ch.mvcframework.controller.ListController
 /board/detail.do=com.ch.mvcframework.controller.DetailController
+/board/delete.do=com.ch.mvcframework.controller.DeleteController
+/board/edit.do=com.ch.mvcframework.controller.UpdateController
+
 
 #게시판 뷰 페이지 매핑
 #자바 코드안에 뷰 페이지 명을 직접적으로 명시하게 되면 외부 파일의 명칭이 달라질 경우 자바 코드가 영향을 받게 된다.
@@ -16,5 +19,17 @@
 
 #글 등록시에는 list.do 로 들어가야 한다.
 /board/regist/result=/board/list.do
+
+#글 목록 보기 요청처리 시 뷰 매핑
 /board/list/result=/board/list.jsp
+
+
+#상세보기 요청처리 시 뷰 매핑
 /board/detail/result=/board/detail.jsp
+
+#삭제 요청처리 시 뷰 매핑(.do를 거쳐야 컨트롤러를 만나고 그래야 새로 갱신된 데이터를 보니깐..)
+/board/delete/result=/board/list.do
+
+#수정 요청 처리시의 뷰매핑
+/board/update/result=/board/detail.do
+
