@@ -11,6 +11,8 @@ import org.apache.ibatis.session.SqlSession;
 import com.ch.mvcframework.controller.Controller;
 import com.ch.mvcframework.dto.Dept;
 import com.ch.mvcframework.dto.Emp;
+import com.ch.mvcframework.emp.model.EmpService;
+import com.ch.mvcframework.exception.EmpException;
 import com.ch.mvcframework.mybatis.MybatisConfig;
 import com.ch.mvcframework.repository.DeptDAO;
 import com.ch.mvcframework.repository.EmpDAO;
@@ -21,19 +23,11 @@ import com.ch.mvcframework.repository.EmpDAO;
  * 4단계: 등록 (DML 이므로 생략)
  * */
 public class RegistController implements Controller{
-	/*
-	 * DeptDAO와 EmpDAO가 같은 트랜잭션으로 묶이려면 각각의 DAO는 공통의 SqlSession을 사용해야 한다..
-	 * 따라서 이 컨트롤러에서 MybatisConfig으로 부터 SqlSession을 하나 취득한 후 
-	 * insert문 호출시 같은 주소값을 갖는 공유된 SqlSession을 나눠주자 (트랜젝션 사용!!!!!)
-	 * 
-	 * */
-	MybatisConfig mybatisConfig = MybatisConfig.getInstance();
-	DeptDAO deptDAO = new DeptDAO();
-	EmpDAO empDAO = new EmpDAO();
 	
+	private EmpService empService = new EmpService();
+	private String viewName;
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		SqlSession sqlSession = mybatisConfig.getSqlSession();
 		
 		
 		//부서 관련 정보 -->Dept2 에 등록
@@ -48,36 +42,36 @@ public class RegistController implements Controller{
 		
 		
 		//사원 관련 정보 -->Emp2 에 등록
+		Emp emp = new Emp();
 		String empno=request.getParameter("empno");
 		String ename=request.getParameter("ename");
 		String sal=request.getParameter("sal");
 		
-		Emp emp = new Emp();
 		emp.setEmpno(Integer.parseInt(empno));
 		emp.setEname(ename);
 		emp.setSal(Integer.parseInt(sal));
+		//Emp가 Dept를 has a 관계로 보유하고 있으므로
+		//낱개로 전달하지말고, 모아서 전달하자.
+		emp.setDept(dept);
+		//모델 영역에 일 시키기!!
+		//(주의) 구체적으로 일 하지 말고 시키자!!
+		//코드가 혼재되므로 , 모델영역을 분리시킬수 없으므로 분리시킬 수 없으므로 재사용성이 떨어짐
 		
-		//mybatis는 Default 가 autocommit=false로 되어있으므로 , 개발자가 별도로 
-		// start transaction 을 언급하지 않아도 됨
 		try {
-			deptDAO.insert(sqlSession,dept);
-			empDAO.insert(sqlSession,emp);
-			sqlSession.commit();// 트랜젝션 확정
+			//아래의 레지스트 메서드에는 예외 처리가 전가되는 throws 가 명시되어 있음에도 불구하고
+			// RuntimeError 이기 때문에 오류처리가 강제 되지 않으며, 개발자가 직접 핸들링 해줘야 한다.
+			empService.regist(emp);	
+			viewName = "/emp/regist/result";
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			sqlSession.rollback(); // 트랜젝션 롤백
-		}finally {
-			mybatisConfig.release(sqlSession);
-			
+			viewName = "/emp/error";
 		}
-		
-		
 	}
 
 	@Override
 	public String getViewName() {
-		// TODO Auto-generated method stub
-		return null;
+		return viewName;
 	}
 
 	@Override
