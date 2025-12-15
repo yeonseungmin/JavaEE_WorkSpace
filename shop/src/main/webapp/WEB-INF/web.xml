@@ -1,14 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
   <display-name>shop</display-name>
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.xhtml</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.xhtml</welcome-file>
-  </welcome-file-list>
+	
+<!-- 
+		우리가 제작한 MVC 프레임 워크와 마찬가지로, 스프링 MVC 또한 모든 요청을 하나의 진입점으로 몰아넣는다.
+		즉 프론트(맨 앞)에 유일한 컨트롤러 하나를 둔다.
+ -->
+ 
+ 
+ <servlet>
+ 	<servlet-name>dispatcher</servlet-name>
+ 	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+ 	<!-- init-param 이란 이서블릿의 인스턴스가 최초에 생성되어질 때 호출되는 생명 주기 매서드인 init() 메서드 안으로 
+ 			전달할 문자열 정보가 있을경우 이 파라미터 태그를 이용할 수 있다.
+ 			
+ 			아래의 경우 전통적으로 사용해 왔던 xml 방식이 아닌 자바 클래스를 이용한 설정방식을 위한 클래스의 위치를 
+ 			지정하고 있다..
+ 			주의 !! 자바 설정 방식을 사용할 경우 스프링의 컨테이너는 AnnotationConfigApplicationContext 를 사용 해야 하며
+ 			웹 애플리케이션에 특화된 AnnotationConfigWebApplicationContext 를 사용해야한다(Web)
+ 	 -->
+ 	<init-param>
+ 	<param-name>contextClass</param-name>
+ 	<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+ 	</init-param>
+ 	
+ 	<init-param>
+ 	<param-name>contextConfigLocation</param-name>
+ 	<!-- xml등의 설정을 대신하는 자바의 설정 클래스의 위치..  -->
+ 	<param-value>com.ch.shop.config.spring.UserWebConfig</param-value>
+ 	</init-param>
+ 	
+ </servlet>
+ <servlet-mapping>
+ 	<servlet-name>dispatcher</servlet-name>
+ 	<url-pattern>/</url-pattern>
+ </servlet-mapping>
+ 
 </web-app>
