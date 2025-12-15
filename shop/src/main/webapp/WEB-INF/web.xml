@@ -6,7 +6,18 @@
 		우리가 제작한 MVC 프레임 워크와 마찬가지로, 스프링 MVC 또한 모든 요청을 하나의 진입점으로 몰아넣는다.
 		즉 프론트(맨 앞)에 유일한 컨트롤러 하나를 둔다.
  -->
- 
+   	 <filter>
+  	 	<filter-name>encodingFilter</filter-name>
+  	 	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+  	 	<init-param>
+  	 		<param-name>encoding</param-name>
+  	 		<param-value>UTF-8</param-value>
+  	 	</init-param>
+  	 </filter>
+  	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+  	</filter-mapping>
  
  <servlet>
  	<servlet-name>dispatcher</servlet-name>
