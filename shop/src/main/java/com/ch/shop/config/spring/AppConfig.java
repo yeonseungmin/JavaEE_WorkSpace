@@ -3,12 +3,14 @@ package com.ch.shop.config.spring;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import com.ch.shop.test.food.Cook;
 import com.ch.shop.test.food.FriPan;
 import com.ch.shop.test.food.Induction;
 import com.ch.shop.test.food.Pan;
 import com.ch.shop.test.school.Bell;
+import com.ch.shop.test.school.BellAspect;
 import com.ch.shop.test.school.Student;
 
 /*
@@ -25,6 +27,8 @@ import com.ch.shop.test.school.Student;
  * */
 
 @Configuration // 아래의 클래스는 로직용이 아닌 설정용 클래스임을 선언
+@EnableAspectJAutoProxy		//AOP 동작을 시키기 위한 어노테이션
+
 public class AppConfig {
 	/* 애플리케이션에서 사용할 모든 객체들을 등록하자 */
 	@Bean	//bean을 명시해줘야 한다.
@@ -49,8 +53,14 @@ public class AppConfig {
 		return new Bell();
 	}
 	@Bean
-	public Student student(Bell bell) {
-		return new Student(bell);
+	public Student student() {
+		return new Student();
+	}
+	
+	/* 관점 객체 올리기 */
+	@Bean
+	public BellAspect bellAspect(Bell bell) {
+		return new BellAspect(bell);
 	}
 	
 }
