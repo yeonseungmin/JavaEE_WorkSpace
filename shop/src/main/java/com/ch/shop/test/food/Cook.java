@@ -13,7 +13,7 @@ public class Cook {
 	 */
 	public Cook(Pan pan) { 	
 //		pan = new Induction();
-		
+		this.pan =pan;
 	}
 	
 	//특정 객체를 필요로 할때는 그 객체의 상위 자료형을 매개변수로 갖는 setter나 또는 생성자를 준비하면 
