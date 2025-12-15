@@ -9,7 +9,7 @@ import org.aspectj.lang.annotation.Before;
  * 특정 객체 안에 DI 처리하는 것이 아니라, 아예 독립적으로 하나의 관점으로 만들어,
  * 이 관점이 관여될 시점에 공통로직을 자동으로 호출할 수 있는 기술인 AOP를 구현하기 위함이다.
  * */
-
+@Aspect
 public class BellAspect {
 
 	private Bell bell;
@@ -25,12 +25,12 @@ public class BellAspect {
 	//따라서 별도의 의존성이므로 라이브러리에 추가해야 한다.
 	//아래의 @Before 어노테이션 내부에 작성하는 표현식 패턴은 스프링 자체의 문법이 아닌 AspectJ의 문법이므로, 형식을 따라주자
 	//execution(반환형 패키지_모든메서드(호출))
-	@Before("execution(*com.ch.shop.test.school.Student.*(..))")
+	@Before("execution(* com.ch.shop.test.school.Student.*(..))")
 	public void ringBefore() {
 		bell.ding();
 	}
 	
-	@After("execution(*com.ch.shop.test.school.Student.*(..))")
+	@After("execution(* com.ch.shop.test.school.Student.*(..))")
 	public void ringAfter() {
 		bell.ding();
 	}
