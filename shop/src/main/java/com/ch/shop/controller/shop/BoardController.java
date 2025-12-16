@@ -1,19 +1,30 @@
 package com.ch.shop.controller.shop;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ch.shop.dto.Board;
+import com.ch.shop.exception.BoardException;
+import com.ch.shop.model.board.BoardService;
+
+import lombok.extern.slf4j.Slf4j;
 
 /*
  * 우리가 제작한 MVC 프레임 웤에서는 모든 요청마다 1:1 대응하는 컨트롤러를 매핑하는 방식이었으나..
  * 스프링 MVC는 예를 들어 게시판 1개에 대한 목록, 쓰기, 상세보기, 수정, 삭제에 대해 하나의 컨트롤러로 처리가 가능함!!!
  * 왜? 모든요청마다 1:1 대응하는 클래스 기반이 아니라 .. 매서드 기반이기 때문에 !!!!
+ * 
+ * !!!!!!!! 컨트롤러 - 서비스 - DAO - mybatis !!!!!!!!!!!!!!
  * */
-
-@Controller
+@Slf4j			//로그
+@Controller	//컴포넌트 스캔의 대상이 되어 자동인스턴스 생성을 원함..
 public class BoardController {
+	
+	@Autowired	//자동으로 메모리에 올려줄래?
+	private BoardService boardService;
+	
 	//3 단계
 	//글 쓰기 폼 요청 처리 - jsp가 WEB-INF 밑으로 위치하였으므로 브라우저에서 jsp 접근 불가 따라서 아래의 컨트롤러 메서드에서 
 	// /board/write.jsp를 매핑 걸자.
@@ -36,15 +47,11 @@ public class BoardController {
 	//글 목록 페이지 요청 처리
 	@RequestMapping("/board/list")	//HandlerMapping 종류중 인기
 	public ModelAndView getList() {
-		//3 단계 수행
 		System.out.println("클라이언트에 목록 요청 감지");
-		
-		//4 단계 : 결과 저장..
-		
 		return null;
 	}
 	
-	
+
 	// 글 쓰기 요청처리
 	//메서드의 매게변수에 VO(Value Object)를 받을 경우
 	//스프링에서 자체적으로 자동 매핑에 의해 파라미터값들을 채워넣는다.
@@ -54,13 +61,32 @@ public class BoardController {
 	//DTO 보다는 VO를 사용해야 한다.
 	@RequestMapping("/board/regist")
 	public ModelAndView regist(Board board) {
-		System.out.println("board_id " + board.getBoard_id());
-		System.out.println("제목은 " + board.getTitle());
-		System.out.println("작성자는 " + board.getWriter());
-		System.out.println("내용은 " + board.getContent());
+//		System.out.println("board_id " + board.getBoard_id());
+//		System.out.println("제목은 " + board.getTitle());
+//		System.out.println("작성자는 " + board.getWriter());
+//		System.out.println("내용은 " + board.getContent());
+		log.debug("제목은" +board.getTitle());
+		log.debug("제목은" +board.getWriter());
+		log.debug("제목은" +board.getContent());
 		
-		return null;
+		//3 단계 수행
+		// DAO - Service - Controller 순으로 넘어온 에러 메세지 
+		ModelAndView mav = new ModelAndView();
+		try {
+			//에러 성공메세지 관련 처리
+			boardService.regist(board);
+			mav.setViewName("redirect:/board/list");//요청을 끊고 새로 목록을 요청.. 재접속..
+		} catch (BoardException e) {
+			//에러 실패의 메세지 관련 처리		
+			log.error(e.getMessage());
+			mav.addObject("msg",e.getMessage());	//request.setAttribute("msg",e.getMessage())와 동일한 기능	HttpServlet request
+			mav.setViewName("/error/result");		//redirect를 개발자가 명시하지 않으면 스프링에서는 기본값이 forwarding 이다.(데이터 가져감)
+		}
+		return mav;
 	}
+	
+	//4 단계 : 결과 저장.. select 가 없어서 불필요 
+	
 	
 	
 	// 글 상세 보기 요청처리

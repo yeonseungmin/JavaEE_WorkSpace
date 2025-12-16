@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.ch.shop.controller.shop.BoardController;
+import com.ch.shop.model.board.BoardDAO;
 
 /*
  * !!! 이 클래스는 로직을 작성하기 위함이 아니라 애플리케이션에서 사용할 빈(객체)들 및 그들간의 관계(weaving)까지
@@ -33,7 +35,7 @@ import com.ch.shop.controller.shop.BoardController;
 //MVC 에서의 DAO 는 @Repository 를 붙임
 //MVC 에서의 DAO 는 @Service 를 붙임
 //MVC 에서의 특정 분류가 딱히 없음에도 자동으로 올리고 싶다면 @Component
-@ComponentScan(basePackages = "com.ch.shop.controller" )
+@ComponentScan(basePackages = {"com.ch.shop.controller","com.ch.shop.model"} )
 public class UserWebConfig {
 
 	//DispatcherServlet이 하위 컨트롤러 부터 반환받은 결과 페이지에 대한 정보는 사실 완전한 jsp 경로가 아님으로
@@ -89,9 +91,9 @@ public class UserWebConfig {
 	 * ----------------------------------------------------------------------------------------------------
 	 * */
 	
-	@Bean	//트랜잭션 !!!!!!!!
-	public PlatformTransactionManager transactionManager() {
-		return new DataSourceTransactionManager();
+	@Bean	//트랜잭션 !!!!!!!!		sqlSessionFactory.getConfiguration().getEnvironment().....환경설정
+	public PlatformTransactionManager transactionManager(SqlSessionFactory sqlSessionFactory) {
+		return new DataSourceTransactionManager(sqlSessionFactory.getConfiguration().getEnvironment().getDataSource());
 		
 	}
 	
@@ -106,8 +108,34 @@ public class UserWebConfig {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		//패키지에 포함된 파일의 유형이 클래스가 아닌경우 더이상 패키지로 표현하지말고, 일반 디렉토리로 취급해야한다. "/"
 		sqlSessionFactoryBean.setConfigLocation(new ClassPathResource("com/ch/shop/config/mybatis/config.xml"));
+		
+		// 세션 팩토리가 톰켓의 내장 서버를 인식하라는 코드
+		sqlSessionFactoryBean.setDataSource(dataSource());
 		return sqlSessionFactoryBean.getObject();
 	}
+	
+
+	/*----------------------------------------------------------------------------------------------------
+	 * 4) SqlSessionTemplate 빈 등록		(쿼리 수행 객체)
+	 * 	 	mybatis 사용시 쿼리문 수행을 위해서는 SqlSession을 이용했으나,
+	 * 		 mybatis-Spring 에서는  SqlSessionTemplate 객체를 사용해야 함
+	 * ----------------------------------------------------------------------------------------------------
+	 */
+	@Bean		// 3) 에서 마든 sqlSessionFactory를 weaving , throws 처리
+	public SqlSessionTemplate sessionTemplate() throws Exception{
+		return new SqlSessionTemplate(sqlSessionFactory());
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 }

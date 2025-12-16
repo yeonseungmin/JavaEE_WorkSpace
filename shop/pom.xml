@@ -59,5 +59,29 @@
 		    <version>4.3.30.RELEASE</version>
 		</dependency>
 		
+		<!-- slf4j-api -->
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>1.7.36</version>
+		</dependency>
+		
+		    <!--log back 은 slf4j의 구현체 이다.-->
+		    <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-classic</artifactId>
+		    <version>1.2.13</version>
+		    <scope>compile</scope>
+		</dependency>
+		    
+		<!-- Spring 4는 기본적으로 commons-logging 이 있음 아래는 충돌 방지용 브릿지 설치 권장 -->
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>jcl-over-slf4j</artifactId>
+		    <version>1.7.36</version>
+		</dependency>
+		    
   </dependencies>
 </project>
