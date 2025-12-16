@@ -15,6 +15,8 @@ import org.springframework.jndi.JndiTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.ch.shop.controller.shop.BoardController;
@@ -36,7 +38,7 @@ import com.ch.shop.model.board.MybatisBoardDAO;
 //MVC 에서의 DAO 는 @Service 를 붙임
 //MVC 에서의 특정 분류가 딱히 없음에도 자동으로 올리고 싶다면 @Component
 @ComponentScan(basePackages = {"com.ch.shop.controller","com.ch.shop.model"} )
-public class UserWebConfig {
+public class UserWebConfig extends WebMvcConfigurerAdapter{
 
 	//DispatcherServlet이 하위 컨트롤러 부터 반환받은 결과 페이지에 대한 정보는 사실 완전한 jsp 경로가 아님으로
 	//이를 해석할 수 있는 자인 ViewResolver 에게 맡겨야 하는데, 이 ViewResolver 중 유달리 접두어와 접미어 방식을
@@ -126,8 +128,15 @@ public class UserWebConfig {
 		return new SqlSessionTemplate(sqlSessionFactory());
 	}
 	
-	
-	
+	// DispatcherServlet 은 컨트롤러에 대한 매핑만 수행하게 되며, 정적자원(css, js, html, image 등)에
+	// 대해서는 직접 처리하지 않게 하기 	extends	WebMvcConfigurerAdapter{
+	// 아래의 행동을 하면 DispatcherServlet 이 관여하지 않게됨
+	// http://localhost:8888/static/adminlte/index.html
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry regist) {
+		//regist.addResourceHandler("브라우저로 접근할 주소").addResourceLocations("웹애플리케이션을 기준으로 실제 정적자원이 있는 위치");
+		regist.addResourceHandler("/static/**").addResourceLocations("/resources/");
+	}
 	
 	
 	
