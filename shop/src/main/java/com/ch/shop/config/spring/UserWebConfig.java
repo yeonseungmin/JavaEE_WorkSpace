@@ -18,7 +18,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.ch.shop.controller.shop.BoardController;
-import com.ch.shop.model.board.BoardDAO;
+import com.ch.shop.model.board.MybatisBoardDAO;
 
 /*
  * !!! 이 클래스는 로직을 작성하기 위함이 아니라 애플리케이션에서 사용할 빈(객체)들 및 그들간의 관계(weaving)까지

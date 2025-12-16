@@ -1,13 +1,21 @@
 package com.ch.shop.controller.shop;
 
+import java.lang.ProcessBuilder.Redirect;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ch.shop.dto.Board;
 import com.ch.shop.exception.BoardException;
 import com.ch.shop.model.board.BoardService;
+import com.ch.shop.model.board.BoardServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardController {
 	
 	@Autowired	//자동으로 메모리에 올려줄래?
-	private BoardService boardService;
+	private BoardService boardService;	// ex) Pan 을 보유하여 DI를 높임 FriPan 을 보유하면 좋은 코드는 아님
 	
 	//3 단계
 	//글 쓰기 폼 요청 처리 - jsp가 WEB-INF 밑으로 위치하였으므로 브라우저에서 jsp 접근 불가 따라서 아래의 컨트롤러 메서드에서 
@@ -43,14 +51,6 @@ public class BoardController {
 		mav.setViewName("/board/write");
 		return mav; // /WEB-INF/board/write.jsp 의 접두어. 접미어 자르고 key 값으로 넘김
 	}
-	
-	//글 목록 페이지 요청 처리
-	@RequestMapping("/board/list")	//HandlerMapping 종류중 인기
-	public ModelAndView getList() {
-		System.out.println("클라이언트에 목록 요청 감지");
-		return null;
-	}
-	
 
 	// 글 쓰기 요청처리
 	//메서드의 매게변수에 VO(Value Object)를 받을 경우
@@ -61,10 +61,12 @@ public class BoardController {
 	//DTO 보다는 VO를 사용해야 한다.
 	@RequestMapping("/board/regist")
 	public ModelAndView regist(Board board) {
+		
 //		System.out.println("board_id " + board.getBoard_id());
 //		System.out.println("제목은 " + board.getTitle());
 //		System.out.println("작성자는 " + board.getWriter());
 //		System.out.println("내용은 " + board.getContent());
+		
 		log.debug("제목은" +board.getTitle());
 		log.debug("제목은" +board.getWriter());
 		log.debug("제목은" +board.getContent());
@@ -82,19 +84,77 @@ public class BoardController {
 			mav.addObject("msg",e.getMessage());	//request.setAttribute("msg",e.getMessage())와 동일한 기능	HttpServlet request
 			mav.setViewName("/error/result");		//redirect를 개발자가 명시하지 않으면 스프링에서는 기본값이 forwarding 이다.(데이터 가져감)
 		}
+		//4 단계 : 결과 저장.. select 가 없어서 불필요 
 		return mav;
 	}
 	
-	//4 단계 : 결과 저장.. select 가 없어서 불필요 
-	
-	
-	
+	//글 목록 페이지 요청 처리
+	@RequestMapping("/board/list")	//HandlerMapping 종류중 인기
+	public ModelAndView getList() {
+		//3단계 수행
+		List list = boardService.selectAll();
+		//4단계 수행 저장 : select 문의 경우 저장할 결과가 있다!!
+		//현재 컨트롤러에서는 디자인을 담당하면 안되므로, 디자인 영역인 뷰에서 보여질 View 에서 보여질 결과를 저장해놓자.(request 객체)
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("list",list);
+		mav.setViewName("/board/list");
+		return mav;
+	}
+
+
 	// 글 상세 보기 요청처리
+	@RequestMapping("/board/detail")		// 아래 둘다 가능
+//	public ModelAndView getDetail(int board_id) {	//클라이언트가 전송한 파라미터 명과 동일해야 전송해줌 requset.getParameter("") 불필요
+	public String getDetail(int board_id,Model model) {	//클라이언트가 전송한 파라미터 명과 동일해야 전송해줌 requset.getParameter("") 불필요
+		//3단계 일시키기
+		Board board = boardService.select(board_id);
+		model.addAttribute("board",board);	//jsp에서 키 값과 일치해야함
+		//4단계 저장 
+		return "/board/detail";
+	}
 	
+	//글 수정 요청 처리	DML
+	@GetMapping("/board/edit")
+	public String edit(Board board, Model model) {
+		log.debug("title is" + board.getTitle());
+		log.debug("writer is" + board.getWriter());
+		log.debug("content is" + board.getContent());
+		log.debug("board_id is" + board.getBoard_id());
+		
+		String viewName = null;
+		try {
+			boardService.update(board);
+			viewName = "redirect:/board/detail?board_id="+board.getBoard_id();
+		} catch (BoardException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			model.addAttribute("msg",e.getMessage());
+			viewName = "/error/result";
+			
+		}
+		return viewName;
+	}
 	
-	//글 수정 요청 처리
+	//글 삭제 요청 처리 DML
+	@GetMapping("/board/delete")
+	public String delete(int board_id) {
+		log.debug("삭제 요청시 날아온 파라미터 값은? "+board_id);
+		boardService.delete(board_id);
+		return "redirect:/board/list";
+	}
 	
-	
-	//글 삭제 요청 처리
-	
+	/*
+	 * 스프링의 컨트롤에서는 예외의 발생을 하나의 이벤트로 보고, 이 이벤트를 자동으로 감지하여
+	 * 에러를 처리할 수 있는 메서드를 지원해줌
+	 * 
+	 * */
+	@ExceptionHandler(BoardException.class) //현재 컨트롤러에 명시된 요청을 처리하는 모든 메서드 내에서 
+																// BoardException이 발생하면 이를 자동으로 감지하여 아래의 메서드를 호출해줌
+																// 이때 매서드를 호출해 주면서, 매게변수로 예외 객체의 인스턴스를 자동으로 넘겨줌..
+	public ModelAndView handle(BoardException e) {
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("msg",e.getMessage());	// "msg" => jar 파일 확인
+		mav.setViewName("/error/result");
+		return mav;
+	}
 }

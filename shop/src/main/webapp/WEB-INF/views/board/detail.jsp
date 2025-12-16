@@ -29,8 +29,8 @@
 		$("#bt_edit").click(()=>{
 			if(confirm("수정하시겠어요?")){
 					$("#form1").attr({
-						action:"/board/edit.do",
-						method:"post"		// << 여기 post 옆에 세미콜론 붙여놨더라. 오타난거 수정하고 위에 action에 링크 넣어놨다. 잘 된다 이제. 그리고 키보드 마우스좀 닦아라 개기름 아으
+						action:"/board/edit"
+						//method:"post"		// << 여기 post 옆에 세미콜론 붙여놨더라. 오타난거 수정하고 위에 action에 링크 넣어놨다. 잘 된다 이제. 그리고 키보드 마우스좀 닦아라 개기름 아으
 					});
 					$("#form1").submit();
 				}
@@ -46,7 +46,7 @@
 			});
 		
 		$("#bt_list").click(()=>{
-			location.href="/board/list.do";
+			location.href="/board/list";
 			});
 
 	});
