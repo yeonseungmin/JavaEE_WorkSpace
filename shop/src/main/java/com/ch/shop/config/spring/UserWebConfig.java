@@ -89,7 +89,7 @@ public class UserWebConfig {
 	 * ----------------------------------------------------------------------------------------------------
 	 * */
 	
-	@Bean
+	@Bean	//트랜잭션 !!!!!!!!
 	public PlatformTransactionManager transactionManager() {
 		return new DataSourceTransactionManager();
 		
@@ -99,7 +99,7 @@ public class UserWebConfig {
 	 * 3)SqlSession을 관리하는 mybatis의 SqlSessionFactory를 빈으로 등록
 	 * ----------------------------------------------------------------------------------------------------
 	 */
-	@Bean
+	@Bean		//spring 이 mybatis를 이해하는 과정
 	public SqlSessionFactory sqlSessionFactory() throws Exception{
 		//순수 mybatis 프레임워크 자체에서 지원하는 객체가 아니라, mybatis-Spring에서 지원하는 객체인
 		//SqlSessionFactoryBean 을 이용하여 설정 xml 파일을 로드한다.
