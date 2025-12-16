@@ -17,11 +17,12 @@ import lombok.extern.slf4j.Slf4j;
  * !!!!!!!! 컨트롤러 - 서비스 - DAO - mybatis !!!!!!!!!!!!!!
  * */
 @Repository	//@Repository를 표시해 놓으면, 스프링이 자동 스캔에 의해 탐색한 후 인스턴스를 자동으로 생성해주고, 빈 컨테이너로 관리..
-@Slf4j
+@Slf4j	//@Slf4j Log를 찍기위한 어노테이션
 public class MybatisBoardDAO implements BoardDAO{
 	//스프링에서는 DI 를 적극 활용해야 하므로, 필요한 객체의 인스턴스를 직접 생성하면 안되고
 	// 스프링 컨테이너로부터 주입(Injection) 받아야 한다.
-	@Autowired
+	@Autowired	//@Bean 객체를 자동으로 찾아 매핑해준다.
+	//MyBatis의 핵심 기능을 수행하는 객체입니다. 이 객체를 통해 실제로 MyBatis Mapper 파일에 정의된 SQL 쿼리를 실행합니다.
 	private SqlSessionTemplate sqlSessionTemplate;
 	
 	public void insert(Board board) throws BoardException {
