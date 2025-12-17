@@ -26,17 +26,5 @@
     <!--
     <Manager pathname="" />
     -->
-   	
-   	<ResourceLink
-   		name="jndi/mysql"
-   		global="jndi/mysql"
-   		type="javax.sql.DataSource"/>
-
-
-
-    <!-- javax.sql.DataSource 는 javaSE 에서 정해놓은 인터페이스이고
-    	이 인터페이스를 Tomcat이 구현한 커넥션 풀링 구현체가 "org.apache.tomcat.jdbc.pool.DataSourceFactory" -->
-    
-    
-   
+    	<ResourceLink name="jndi/mysql" global="jndi/mysql" type="javax.sql.DataSource"/>
 </Context>

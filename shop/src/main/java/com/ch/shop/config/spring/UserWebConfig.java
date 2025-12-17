@@ -33,9 +33,11 @@ import com.ch.shop.model.board.MybatisBoardDAO;
 // @ComponentScan = 일일이 빈으로 등록할 필요가 없는 많이 알려진 빈들을 가리켜 
 //스프링에서는 컴포넌트라고 한다. 또한 이 컴포넌트들은 패키치 위치만 설정해 놓으면
 //스프링이 알아서 찾아내서(검색) 인스턴스를 자동으로 만들어준다.
-//MVC 에서의 Controller는 @Controller 를 붙임
-//MVC 에서의 DAO 는 @Repository 를 붙임
-//MVC 에서의 DAO 는 @Service 를 붙임
+
+		//MVC 에서의 Controller는 @Controller 를 붙임
+		//MVC 에서의 DAO 는 @Repository 를 붙임
+		//MVC 에서의 DAO 는 @Service 를 붙임
+
 //MVC 에서의 특정 분류가 딱히 없음에도 자동으로 올리고 싶다면 @Component
 @ComponentScan(basePackages = {"com.ch.shop.controller","com.ch.shop.model"} )
 public class UserWebConfig extends WebMvcConfigurerAdapter{
