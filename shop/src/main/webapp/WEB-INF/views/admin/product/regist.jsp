@@ -1,4 +1,12 @@
+<%@page import="javax.print.attribute.HashPrintRequestAttributeSet"%>
 <%@ page contentType="text/html; charset=UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="com.ch.shop.dto.TopCategory" %>
+<%
+	List<TopCategory> topList=(List)request.getAttribute("topList");
+
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,20 +57,49 @@
              <div class="card card-primary">
               <div class="card-header">
               
-                <h3 class="card-title">Quick Example</h3>
+                <h3 class="card-title">Product Registration</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
               <form>
                 <div class="card-body">
+                
+                <div class="form-group row">
+	                <div class ="col-md-6">
+	                  <select class="form-control" name="topcategory">
+	                  <%for(TopCategory topCategory : topList){%>
+		                  <option value="<%=topCategory.getTopcategory_id() %>"><%=topCategory.getTopname() %></option>
+		                  <%} %>
+		                  
+	                  </select>
+	                  </div>
+	                <div class ="col-md-6">
+	                  <select class="form-control">
+	                  
+		                  <option>option1</option>
+	                  </select>
+	                  </div>
+                  </div>
+                  
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Email address</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                    <input type="text" class="form-control" name="product_name" placeholder="상품명">
                   </div>
                   <div class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    <input type="text" class="form-control" name="brand" placeholder="브랜드">
                   </div>
+                  <div class="form-group">
+                    <input type="number" class="form-control" name="price" placeholder="가격(숫자로 입력)">
+                  </div>
+                  <div class="form-group">
+                    <input type="number" class="form-control" name="discount" placeholder="할인가">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" class="form-control" name="introduce" placeholder="간단소개">
+                  </div>
+                  <div class="form-group">
+                    <textarea id="summernote" class="form-control" name="detail" placeholder="상세설명"></textarea>
+                  </div>
+ 
                   <div class="form-group">
                     <label for="exampleInputFile">File input</label>
                     <div class="input-group">
@@ -75,10 +112,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                  </div>
+          
                 </div>
                 <!-- /.card-body -->
 
@@ -90,16 +124,6 @@
             <!-- /.card -->
         
 
-
-                <p>New Orders</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
 
 
 
@@ -126,5 +150,16 @@
 
 <!-- jQuery -->
 <%@ include file="../inc/footer_link.jsp" %>
+<script>
+	$(()=>{
+		$("#summernote").summernote();
+		
+		//상위 카테고리 select 상자의 값을 변경할때, 비동기 방시긍로 하위 카테고리를 출력해주면 UX 가 올라간다.
+		//지금까지는 js 순수 코드를 이용하여 비동기 통신을 수행했지만. 이번 프로그램에서는 Jquery가 지원해주는 비동기 통신 방법을 써보자
+		$("select[name='topcategory']").change(()=>{
+			alert("바꿨어?")
+		});
+	});
+</script>
 </body>
 </html>
