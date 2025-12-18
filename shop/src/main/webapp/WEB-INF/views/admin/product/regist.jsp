@@ -137,7 +137,7 @@
 </div>
 <!-- ./wrapper -->
 	<%@ include file="../inc/footer_link.jsp" %>
-	<script src="/static/adminlte/custom/js/PreviewImg.js"></script>
+	<script src="/static/adminlte/custom/js/PreviewImg.js"></script>s
 	<script>
 	
 	//이 함수는 상위,하위를 모두 처리해야 하므로, 호출 시 상위를 원하는지, 하위를 원하는지 구분해줘야한다
