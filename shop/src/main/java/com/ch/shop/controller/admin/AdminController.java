@@ -12,7 +12,7 @@ public class AdminController {
 		//3단계 무-
 		//4단계 무-
 		
-		return "/admin/index";	
+		return "admin/index";	
 	}
 	
 	

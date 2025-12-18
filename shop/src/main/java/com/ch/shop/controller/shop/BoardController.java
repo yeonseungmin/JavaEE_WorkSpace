@@ -36,7 +36,7 @@ public class BoardController {
 	//3 단계
 	//글 쓰기 폼 요청 처리 - jsp가 WEB-INF 밑으로 위치하였으므로 브라우저에서 jsp 접근 불가 따라서 아래의 컨트롤러 메서드에서 
 	// /board/write.jsp를 매핑 걸자.
-	@RequestMapping("/board/registform")
+	@RequestMapping("board/registform")
 	public ModelAndView registForm() {
 		//3단계 : 일 시킬게 없다.
 		//4단계 : 없다.
@@ -48,7 +48,7 @@ public class BoardController {
 		// ModelAndView 는 이 두가지 객체를 합쳐놓음
 		ModelAndView mav = new ModelAndView();
 		
-		mav.setViewName("/board/write");
+		mav.setViewName("board/write");
 		return mav; // /WEB-INF/board/write.jsp 의 접두어. 접미어 자르고 key 값으로 넘김
 	}
 
@@ -59,7 +59,7 @@ public class BoardController {
 	//DTO와 VO는 비슷하기는 하지만, DTO는 테이블을 반영한 객체이다 보니 
 	//클라이언트로 부터 숨기는 것이 좋다. 단순히 클라이언트의 파라미터를 받는것이 목적이라면
 	//DTO 보다는 VO를 사용해야 한다.
-	@RequestMapping("/board/regist")
+	@RequestMapping("board/regist")
 	public ModelAndView regist(Board board) {
 		
 //		System.out.println("board_id " + board.getBoard_id());
@@ -82,14 +82,14 @@ public class BoardController {
 			//에러 실패의 메세지 관련 처리		
 			log.error(e.getMessage());
 			mav.addObject("msg",e.getMessage());	//request.setAttribute("msg",e.getMessage())와 동일한 기능	HttpServlet request
-			mav.setViewName("/error/result");		//redirect를 개발자가 명시하지 않으면 스프링에서는 기본값이 forwarding 이다.(데이터 가져감)
+			mav.setViewName("error/result");		//redirect를 개발자가 명시하지 않으면 스프링에서는 기본값이 forwarding 이다.(데이터 가져감)
 		}
 		//4 단계 : 결과 저장.. select 가 없어서 불필요 
 		return mav;
 	}
 	
 	//글 목록 페이지 요청 처리
-	@RequestMapping("/board/list")	//HandlerMapping 종류중 인기
+	@RequestMapping("board/list")	//HandlerMapping 종류중 인기
 	public ModelAndView getList() {
 		//3단계 수행
 		List list = boardService.selectAll();
@@ -97,13 +97,13 @@ public class BoardController {
 		//현재 컨트롤러에서는 디자인을 담당하면 안되므로, 디자인 영역인 뷰에서 보여질 View 에서 보여질 결과를 저장해놓자.(request 객체)
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("list",list);
-		mav.setViewName("/board/list");
+		mav.setViewName("board/list");
 		return mav;
 	}
 
 
 	// 글 상세 보기 요청처리
-	@RequestMapping("/board/detail")		// 아래 둘다 가능
+	@RequestMapping("board/detail")		// 아래 둘다 가능
 //	public ModelAndView getDetail(int board_id) {	//클라이언트가 전송한 파라미터 명과 동일해야 전송해줌 requset.getParameter("") 불필요
 	public String getDetail(int board_id,Model model) {	//클라이언트가 전송한 파라미터 명과 동일해야 전송해줌 requset.getParameter("") 불필요
 		//3단계 일시키기
@@ -154,7 +154,7 @@ public class BoardController {
 	public ModelAndView handle(BoardException e) {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("msg",e.getMessage());	// "msg" => jar 파일 확인
-		mav.setViewName("/error/result");
+		mav.setViewName("error/result");
 		return mav;
 	}
 }
