@@ -23,7 +23,7 @@ public class SubCategoryController {
 	// 목록 요청 처리
 	// 주의 ) 클라이언트가 비동기 요청을 시도할 경우 서버는 절대로 JSP ,HTML 문서를 원하는것이 아님으로 데이터만 보내줘야한다.
 	// 			특히 개발에 표준적으로 많이 사용되는 형식이 JSON 문자열
-	@GetMapping("/admin/subcategory/list")
+	@GetMapping("/subcategory/list")
 	@ResponseBody		// 리턴값 자체를 응답 정보로 사용하라고!!(DispatcherServlet에게 명령)
 								// 또한 이 @ResponseBody를 적용하면 json MessageConvert를 자동적 적용!!
 	public List<SubCategory> getList(int topcategory_id) {

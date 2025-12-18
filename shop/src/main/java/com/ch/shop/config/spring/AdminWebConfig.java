@@ -64,7 +64,7 @@ public class AdminWebConfig extends WebMvcConfigurerAdapter{
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		
-		//registry.addResourceHandler("브라우저로 접근할 주소").addResourceLocations("웹애플리케이션을 기준으로 실제 정적자원이 잇는 우치")
+		//registry.addResourceHandler("브라우저로 접근할 주소").addResourceLocations("웹애플리케이션을 기준으로 실제 정적자원이 잇는 위치")
 		registry.addResourceHandler("/static/**").addResourceLocations("/resources/");
 	}
 	

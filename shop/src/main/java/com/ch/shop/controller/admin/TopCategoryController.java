@@ -16,7 +16,7 @@ public class TopCategoryController {
 	@Autowired
 	private TopCategoryService topCategoryService;
 	
-	@GetMapping("/admin/topcategory/list")
+	@GetMapping("/topcategory/list")
 	@ResponseBody		//순수한 데이터로 보내기
 	public List<TopCategory> getList(){
 		return topCategoryService.getList();

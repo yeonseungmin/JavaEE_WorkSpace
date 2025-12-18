@@ -20,7 +20,7 @@ public class ProductController {
 	private TopCategoryService topCategoryService;
 	
 	//상품 등록 폼 요청 처리
-	@GetMapping("/admin/product/registform")
+	@GetMapping("/product/registform")
 	public String getRegistForm(Model model) {
 		//3단계 : 상품페이지에 출력할 상위 카테고리 가져오기
 		//List topList = topCategoryService.getList();	//이것도 가능하지만 비동기를 배웠으니

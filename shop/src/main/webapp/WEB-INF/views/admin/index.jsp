@@ -628,7 +628,7 @@
   <%@ include file="./inc/footer.jsp" %>
   
   <!-- Control Sidebar -->
-<%@ include file="./inc/controll_sidebar.jsp" %>
+<%@ include file="./inc/control_sidebar.jsp" %>
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->

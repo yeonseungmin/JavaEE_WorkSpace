@@ -114,7 +114,7 @@ public class BoardController {
 	}
 	
 	//글 수정 요청 처리	DML
-	@GetMapping("/board/edit")
+	@GetMapping("board/edit")
 	public String edit(Board board, Model model) {
 		log.debug("title is" + board.getTitle());
 		log.debug("writer is" + board.getWriter());
@@ -136,7 +136,7 @@ public class BoardController {
 	}
 	
 	//글 삭제 요청 처리 DML
-	@GetMapping("/board/delete")
+	@GetMapping("board/delete")
 	public String delete(int board_id) {
 		log.debug("삭제 요청시 날아온 파라미터 값은? "+board_id);
 		boardService.delete(board_id);
