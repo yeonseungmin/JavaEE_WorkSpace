@@ -25,13 +25,19 @@ class PreviewImg{
 		this.wrapper.style.borderRadius="5px";
 		this.wrapper.style.textAlign="center";
 		
-		this.header.innerHTML="<a href='#'>X</a>";
+		this.header.innerHTML="<a href='javascript:alert()'>X</a>";
 		this.header.style.textAlign="right";
 		
 		//조립 
 		this.wrapper.appendChild(this.header);
 		this.wrapper.appendChild(this.img);
 		this.container.appendChild(this.wrapper);
+		
+		//X자에 이벤트 연결
+		this.header.addEventListener("click", (e)=>{
+			e.preventDefault();
+			alert("지울꺼야?");
+		});
 	}	
 	
 }
