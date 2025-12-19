@@ -17,6 +17,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jndi.JndiTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -43,7 +44,17 @@ import com.ch.shop.model.board.BoardServiceImpl;
 @ComponentScan(basePackages = {"com.ch.shop.controller.admin"})
 public class AdminWebConfig extends WebMvcConfigurerAdapter{
 	 
-
+	/*
+	 *  아파치 파일 업로드 컴포넌트를 Bean 으로 등록
+	 *  
+	 * */
+	@Bean
+	public CommonsMultipartResolver multipartResolver() {
+		CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+		
+		return resolver;
+	}
+	
 	
 
 	

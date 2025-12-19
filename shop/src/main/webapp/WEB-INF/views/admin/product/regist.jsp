@@ -56,7 +56,7 @@
 	              </div>
 	              <!-- /.card-header -->
 	              <!-- form start -->
-	              <form>
+	              <form id="product-form">
 	                <div class="card-body">
 						
 						<div class="form-group row">
@@ -147,7 +147,7 @@
 </div>
 <!-- ./wrapper -->
 	<%@ include file="../inc/footer_link.jsp" %>
-	<script src="/static/adminlte/custom/js/PreviewImg.js"></script>s
+	<script src="/static/adminlte/custom/js/PreviewImg.js"></script>
 	<script>
 	//외부의 영역에서 접근하게 하려고 전역변수로 선언.
 	let selectedFile;
@@ -268,6 +268,43 @@
 		!!!비동기!!!
 	------------------------------------------------------------------*/
 	function regist(){
+		
+		let formData = new FormData();
+		// 아래의 방법은 하나의 레코드만 넣는 , 즉 개발자가 일일이 파라미터를 지정하면 Form의 파라미터 수가 많을 경우 처리가 힘듬
+		/* formData.append("product_name", $("input[name='product_name']").val()); */
+		
+		// 해결법! FormData에 기존의 Form 을 대입하자.!!!!!
+		formData = new FormData(document.getElementById("product-form"));	// 주의 JQuery 적용 불가 $("prodcut-form")불가
+		
+		formData.delete("photo");	// 기존 데이터 비우기 	= 비동기 방식임으로 새로고침이 발생하지 않기에 데이터를 비우지 않으면 데이터가 계속 누적된다..
+												// 따라서 등록 버튼을 누를때 마다 기존의 이미지 파라미터 제거하자!!
+		
+		// 사용자가 선택한 이미지 배열만큼 폼데이터에 추가하자.
+		for(let i =0; i<selectedFile.length; i++){
+			formData.append("photo",selectedFile[i]);
+		}
+		formData.append("subCategory.subcategory_id",$("select[name='subcategory']").val());
+		
+		$.ajax({
+			url:"/admin/product/regist",
+			method:"post",						/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+			data:formData,						// 일일이 했을경우 { , , } 레터럴을 이용하여 모두 넣어야함
+														/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+			processData:false,					// processData 주는 이유 : JQuery 는 파라미터 전송 시 원래 json문자열로 전송, 자동 변환해 주는데,우리의 경우 formData를 이용하기 때문에
+														// 전송할 데이터에 바이너리(이미지,photo)파일이 포함되어있다. 따라서 바이너리 파일을 대상으로 자동문자열 변환을 허용하면 에러가 난다.(올바르지 않은 데이터 형식의 전송)
+														// JQuery 로 하여금 문자열 자동변환을 하지말라고 막는 기능.
+														/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+			contentType:false,					// contentType 속성의 의미 : JQuery 에게 Post 전송을 맡기면 자동으로 (contentType:application/x-www-form-urlencoded; charset=UTF8)로
+														// 변환해주기 때문에 우리의 바이너리(이미지, photo) 파일이 포함된 형식에서는 인코딩하지 못하게 금지시켜야 한다.
+														/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+														
+			success:function(result,status,xhr){
+				
+			},
+			error:function(xhr,status,err){
+				
+			}
+		});
 		
 	}
 	
