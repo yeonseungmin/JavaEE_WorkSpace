@@ -18,6 +18,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jndi.JndiTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration	// xml을 대신할꺼야 설정용 파일이야!!!!!!!!
 @ComponentScan(basePackages = {"com.ch.shop.model"})
+@EnableTransactionManagement
 public class RootConfig extends WebMvcConfigurerAdapter{
 
 	/*

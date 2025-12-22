@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Product">
+
+<insert id="insert" parameterType="Product">
+	insert int product(product_name,brand,price,discount,introduce,detail,subcategory_id) 
+	values(#{product_name},#{brand},#{price},#{discount},#{introduce},#{detail},#{subCategory.subcategory_id})
+	
+	<!-- 레코드를 인서트 하자마자, 방금 들어간 pk값을 반환해야할 업무가 상당히 빈번하다.
+			따라서 Mybatis 에서는 이 기능을 별도의 쿼리문으로 수행하지 않고, 현재 insert 태그 내에서 지원하는 방법을 제공
+			last_insert_id() 내가 일으킨 쿼리문의 pk 증가값만 반환된다.
+			오라클 : 시퀀스명.currval 
+			
+	 -->
+	 <selectKey keyColumn="product_id" resultType="int" order="AFTER" keyProperty="product_id" >
+	 	select last_insert_id() as product_id
+	 </selectKey>
+</insert>
+
+
+</mapper>

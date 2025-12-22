@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ch.shop.dto.Color;
 import com.ch.shop.dto.Product;
 import com.ch.shop.dto.Size;
+import com.ch.shop.model.product.ProductService;
 import com.ch.shop.model.topcategory.TopCategoryService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,8 @@ public class ProductController {
 	//서비스 보유 
 	@Autowired
 	private TopCategoryService topCategoryService;
+	@Autowired
+	private ProductService productService;
 	
 	//상품 등록 폼 요청 처리
 	@GetMapping("/product/registform")
@@ -89,6 +92,14 @@ public class ProductController {
 		log.debug("상세소개 = " + product.getDetail());
 		log.debug("색상 = " + product.getColorList());
 		log.debug("사이즈 = " + product.getSizeList());
+		/*------------------------------------------------------------------------------------------------------------------------*/
+		/*넘겨 받은 파라미터를 이용하여 상품등록
+		 * 상품등록이란 논리적 업무 1개 단위 안에 (product, product_img, product_size, product_color 까지 4개의 업무가 포함됨)
+		 * 하지만, 컨트롤러는 4개의 업무로 이루어져 있다는 사실을 몰라야 한다. (대신 서비스가 알아야함)
+		 * 
+		 */
+		/*------------------------------------------------------------------------------------------------------------------------*/
+		productService.regist(product);
 		
 		//이미지가 자동으로 채워졌는지 확인
 		MultipartFile[] photo = product.getPhoto();
