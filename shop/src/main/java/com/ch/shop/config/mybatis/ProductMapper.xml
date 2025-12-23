@@ -3,7 +3,7 @@
 <mapper namespace="Product">
 
 <insert id="insert" parameterType="Product">
-	insert int product(product_name,brand,price,discount,introduce,detail,subcategory_id) 
+	insert into product(product_name,brand,price,discount,introduce,detail,subcategory_id) 
 	values(#{product_name},#{brand},#{price},#{discount},#{introduce},#{detail},#{subCategory.subcategory_id})
 	
 	<!-- 레코드를 인서트 하자마자, 방금 들어간 pk값을 반환해야할 업무가 상당히 빈번하다.

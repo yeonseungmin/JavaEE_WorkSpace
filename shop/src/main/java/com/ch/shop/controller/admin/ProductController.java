@@ -101,28 +101,6 @@ public class ProductController {
 		/*------------------------------------------------------------------------------------------------------------------------*/
 		productService.regist(product);
 		
-		//이미지가 자동으로 채워졌는지 확인
-		MultipartFile[] photo = product.getPhoto();
-		for(MultipartFile p : photo) {
-			log.debug("업로드 된 파일명은 : "+ p.getOriginalFilename());
-			//메모리의 임시파일을 실제 원하는 하드 경로에 저장하기(맛보기)
-			try {
-				p.transferTo(new File("C:/shopdata/product/"+p.getOriginalFilename()));
-				log.debug("저장성공");
-			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-		
-		
-		
-		
-		
 		return "ok";
 	}
 	

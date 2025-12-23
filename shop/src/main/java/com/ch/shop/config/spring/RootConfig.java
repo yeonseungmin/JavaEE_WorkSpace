@@ -29,7 +29,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 // 모든 서블릿이 접근할 수 있는 객체인 ServletContext 수준에서의 스프링컨테이너가 이 클래스를 읽어들여 빈들의 인스턴스를 관리해야 한다.
 
 @Configuration	// xml을 대신할꺼야 설정용 파일이야!!!!!!!!
-@ComponentScan(basePackages = {"com.ch.shop.model"})
+@ComponentScan(basePackages = {"com.ch.shop.model","com.ch.shop.util"})
 @EnableTransactionManagement
 public class RootConfig extends WebMvcConfigurerAdapter{
 
