@@ -17,5 +17,13 @@
 	 </selectKey>
 </insert>
 
+<!-- 모든 상품 가져오기  resultType = DTO -->
+<select id="selectAll" resultType="Product">
+	select product_id, product_name, brand, price, discount,introduce, detail, subcategory_id
+	from product
+	
+
+</select>
+
 
 </mapper>

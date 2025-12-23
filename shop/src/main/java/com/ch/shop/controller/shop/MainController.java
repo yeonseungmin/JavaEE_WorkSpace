@@ -22,7 +22,7 @@ public class MainController {
 	private TopCategoryService topCategoryService;
 	
 	//메인 페이지요청 처리
-	@GetMapping("/shop/main")
+	@GetMapping("/")
 	public ModelAndView getMain() {
 		log.debug("main request ");
 		//3단계 : 여러 데이터 베이스 연동 업무 중, 상위 카테고리 가져오기

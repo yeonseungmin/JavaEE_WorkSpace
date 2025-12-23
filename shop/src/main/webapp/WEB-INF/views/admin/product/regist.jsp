@@ -127,6 +127,7 @@
 	
 	                <div class="card-footer">
 	                  <button type="button" class="btn btn-info">Submit</button>
+	                  <button type="button" class="btn btn-info">상품목록</button>
 	                </div>
 	              </form>
 	            </div>
@@ -299,10 +300,17 @@
 														/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 														
 			success:function(result,status,xhr){
-				
+				//서버의 응답 코드가 200(성공) 일 경우 아래의 success속성에 명시된 콜백함수 동작함
+				//서버측에서 응답한 데이터 형식이 순수 문자열일 경우 , js 의 객체리터럴로 변환해야, 참조가 가능하다.
+				// 그러기 위해서는 문자열을 --> 객체로 json.parse()로 처리
+
+
+				alert(result.message); 
 			},
+			//서버측에서 응답한 응담 코드가 에러인 경우(300 이상인 경우 아래의 error 속성에 명시된 콜백함수 호출)
 			error:function(xhr,status,err){
-				
+				let obj = JSON.parse(xhr.responseText);
+				alert(obj.message);
 			}
 		});
 		
@@ -342,8 +350,11 @@
 			
 		});
 		
-		$(".card-footer button").click(()=>{
+		$($(".card-footer button")[0]).click(()=>{
 			regist();
+		});
+		$($(".card-footer button")[1]).click(()=>{
+			location.href="/admin/product/list";
 		});
 	});
 	</script>

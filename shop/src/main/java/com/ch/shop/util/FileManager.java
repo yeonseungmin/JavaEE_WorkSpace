@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ch.shop.exception.DirectoryException;
 import com.ch.shop.exception.UploadException;
 
+import lombok.extern.slf4j.Slf4j;
+
 /*
  * 이 클래스의 목적
  * 기존 코드에서는 컨트롤러가 업로드를 처리하고 있었으므로, 문제
@@ -17,6 +19,7 @@ import com.ch.shop.exception.UploadException;
  * */
 @Component	// 스프링은 @Controller, @Service, @Repository 외에, 개잘자가 정의한 객체도 자동으로 ComponentScan의 대상이
 					// 될 수 있는데, 이때 개발자가 정의한 객체를 자동으로 빈으로 등록하면 @Component로 선언하면 된다.
+@Slf4j
 public class FileManager {
 	/*---------------------------------------------------------------
 	 * 원하는 이름으로 디렉토리 만들기
@@ -31,7 +34,12 @@ public class FileManager {
 		}
 	}
 	
-	
+	/*---------------------------------------------------------------
+		확장자 추출하기 메서드의 인수로 원하는 경로를 넣으면 알아서 확장자를 반환해주는 메서드
+	 * --------------------------------------------------------------*/
+	public String getExtend(String path) {
+		return path.substring(path.lastIndexOf(".")+1, path.length());
+	}
 	
 	
 	
@@ -46,6 +54,7 @@ public class FileManager {
 		//임시 디렉토리 또는 메모리 상의 파일 정보를 이용하여 실제 디스크에 저장하는 행동
 		try {
 			multipartFile.transferTo(file);
+			Thread.sleep(10); 	// 딜레이 역활 ( 파일명을 생성하는 메서드 보다 시간 업로드가 빨라 파일이 중복이 생김)
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -55,7 +64,32 @@ public class FileManager {
 		
 		
 	}
-	
-	
+	/*---------------------------------------------------------------
+	파일 삭제 - 이 메서드 호출시 제거대상이 되는 디렉토리의 경로를 넘겨야 한다.
+ * --------------------------------------------------------------*/
+	public void remove(String path){
+		//1) 지정된 경로에 파일들이 존재하는지 조사
+		File directory = new File(path);
+		
+		//디렉토리인지 부터 판단하고, 만약 디렉토리임이 검증된 경우에 조사..
+		if(directory.exists() && directory.isDirectory()) { //100%확실히 디렉토리로 평가가 된다면
+			// 소속된 자식 구하기
+			File[] files=directory.listFiles();	// 이 디렉토리 하위에 존재하는 디렉토리나, 파일을 File[] 로 반환해줌
+										// 우리의 경우 상품 사진만 넣었으므로, 디렉토리가 존재할 가능성이 없음
+			if(files != null) {//자식이 존재한다면
+				for(File file: files) {
+					boolean result=file.delete();
+					if(!result)log.debug("파일 삭제 실패="+file.getName());
+				}
+			}
+			// 위에서 디렉토리 안의 자식 파일들을 모두 삭제했으므로, 디렉토리를 삭제하자.
+			if(directory.delete()== false) {
+				log.debug("디렉토리 삭제 실패" + directory.getAbsolutePath());// 디렉토리 풀 경로 기록 확인
+			}
+			
+		}
+		
+		
+	}
 	
 }

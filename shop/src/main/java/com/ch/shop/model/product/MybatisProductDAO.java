@@ -1,5 +1,7 @@
 package com.ch.shop.model.product;
 
+import java.util.List;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -23,6 +25,12 @@ public class MybatisProductDAO implements ProductDAO {
 			e.printStackTrace();	//개발자용
 			throw new ProductException("상품 insert 실패",e);	//유저 용
 		}
+		
+	}
+
+	@Override
+	public List selectAll() {
+		return sqlSessionTemplate.selectList("Product.selectAll");
 		
 	}
 
