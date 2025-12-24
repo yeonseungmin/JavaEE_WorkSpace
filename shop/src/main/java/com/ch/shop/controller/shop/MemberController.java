@@ -5,11 +5,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import com.ch.shop.dto.OAuthClient;
 import com.ch.shop.model.topcategory.TopCategoryService;
@@ -25,7 +31,8 @@ public class MemberController {
 	private TopCategoryService topCategoryService;
 	@Autowired
 	private Map<String, OAuthClient> oauthClients;
-	
+	@Autowired
+	private RestTemplate restTemplate;
 	
 	//회원 로그인폼 요청 처리
 	@GetMapping("/member/loginform")
@@ -74,6 +81,30 @@ public class MemberController {
 		 *  
 		 *-------------------------------------------------------------------------------- */
 		log.debug("구글이 발급한 임시 코드는 ="+code);
+		
+		OAuthClient google =oauthClients.get("google");
+		// 구글로부터 받은 임시코드와 나의 정보 (client id, client secret) 를 조합하여 구글에게 보내자.. (토큰을 받으려고)
+		// 이때, 구글과 같은 프로바이더와 데이터를 주고 받기 위해서는 HTTP 통신규약을 지켜서 말을 걸때는 머리,몸을 구성하며 요청을 시도해야함
+		MultiValueMap<String, String> param = new LinkedMultiValueMap<String, String>();
+		param.add("code", code); // 구글로부터 받은 임시코드를 그대로 추가
+		param.add("client_id",google.getClientId());	//전송할 id 추가
+		param.add("client_secret", google.getClientSecret());	//전송할 pwd 추가
+		param.add("redirect_uri", google.getAuthorizeUrl());		//callback url 추가
+		
+		HttpHeaders headers = new HttpHeaders();	//머리 만들기
+		//아래와 같이 전송 파라미터에 대한 contentType 을 명시하면 , key=value&key=value 방식의 데이터 쌍으로 자동으로 변환
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		
+		//머리와 본문(몸)을 합쳐서 하나의 HTTP 요청 엔터티로 결합 하여 보내자
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(param,headers);
+		
+		//구글에 요청 시작!! , 스프링에서는 Http요청 후 그 응답 정보를 java객체와 자동으로 매핑해주는 편리한 객체를 지원해 주는데,
+		// 그 객체가 바로 RestTemplate (Http 요청 능력 + jackson능력 )
+		/*
+		 * restTemplate.postForEntity("google토큰발급주소", "요청객체(머리와 몸을 합친)", "결과를 받을 클래스");
+		 */
+		restTemplate.postForEntity(google.getTokenUrl(), request, 결과를 받을 클래스);
+		
 		return null;
 	}
 }
