@@ -35,5 +35,17 @@
     		javax.sql.DataSource 는 javase 에서 정해놓은 인터페이스이고
     		이 인터페이스를 Tomcat이 구현한 커넥션풀링 구현체가 org.apache.tomcat.jdbc.pool.DataSourceFactory
     	-->
+    	
+    	<!-- 
+    		sns 로그인 과련 보안 정보
+    		왜 프로젝트 내에 등록하지 않고, 외부 설정파일을 이용해야 하는가 
+    			ㄴ 이 컨텍스트 파일을 tomcat 서버 안에서 관리되는 파일이지.. 프로젝트 내에 포함되어 있지 않다.
+    				따라서 개발자가 프로젝트 내에 중요한 데이터를 보관할 경우 GitHub 에 올렸을때 발생하는 보안 사고 방지
+    		
+    	 -->
+		<Environment name="google/client/id" type="java.lang.String" value="376755494648-do6n4em4ugaif7s0bh0gudqhpnq9gq8g.apps.googleusercontent.com"
+		override="false" />    
+		<Environment name="google/client/secret" type="java.lang.String" value="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"
+		override="false" /> 
     
 </Context>

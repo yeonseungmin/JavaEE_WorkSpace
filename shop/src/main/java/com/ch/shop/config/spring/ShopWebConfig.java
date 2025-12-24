@@ -1,6 +1,8 @@
 package com.ch.shop.config.spring;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -8,6 +10,7 @@ import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +26,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.ch.shop.model.board.MybatisBoardDAO;
+import com.ch.shop.dto.OAuthClient;
 import com.ch.shop.model.board.BoardServiceImpl;
 
 /*
@@ -40,14 +44,72 @@ import com.ch.shop.model.board.BoardServiceImpl;
 //MVC에서의 DAO 는 @Repository 를 붙임 
 //MVC에서의 DAO 는 @Service 를 붙임 
 //MVC에서의 특정 분류가 딱히 없음에도 자동으로 올리고 싶다면 @Component
+// 자동매핑
 @ComponentScan(basePackages = {"com.ch.shop.controller.shop"})
 public class ShopWebConfig extends WebMvcConfigurerAdapter{
 	 
+	//수동매핑
 	// context.xml 등에 명시된 외부 자원을 JNDI 방식으로 읽어들일 수 있는 스프링의 객체
 	@Bean
 	public JndiTemplate jndiTemplate() {
-		return null;
+		
+		return new JndiTemplate();
 	}
-
+	
+	/*----------------------------------------------------------------
+	 * Google
+	 *----------------------------------------------------------------- */
+	
+	@Bean
+	public String googleClientId(JndiTemplate jndiTemplate) throws Exception{
+		return (String)jndiTemplate.lookup("java:comp/env/google/client/id");
+	}
+	
+	@Bean
+	public String googleClientSecret(JndiTemplate jndiTemplate) throws Exception{
+		return (String)jndiTemplate.lookup("java:comp/env/google/client/secret");
+	}
+	
+	/*
+	 * OAuth 로그인 시 사용되는 환경변수 (요청주소, 콜백주소 .. 등등)는 객체로 담아서 관리하면 유지보수하기 좋다.
+	 * 우리의 경우 여로 Provider를 연동할 것이기 때문에 OAuthClient 객체를 여러개 메모리에 보관해 놓자.
+	 * 
+	 * */
+	@Bean
+	public Map<String, OAuthClient> oauthClients(
+			@Qualifier("googleClientId") String googleClientId,
+			@Qualifier("googleClientSecret") String googleClientSecret
+			
+			){
+		// 구글 , 네이버, 카카오를 각각 OAuthClient 인스턴스 담은 후, 다시 Map에 모아두자
+		Map<String, OAuthClient> map = new HashMap<>();
+		
+		//구글 등록
+		OAuthClient google = new OAuthClient();
+		google.setProvider("google");
+		google.setClientId(googleClientId);
+		google.setClientSecret(googleClientSecret);
+		google.setAuthorizeUrl("https://accounts.google.com/o/oauth2/v2/auth");	//googleAPI 문서에 나와있다.
+		google.setTokenUrl("https://oauth2.googleapis.com/token"); // 토큰을 요청할 주소
+		google.setScope("openid email profile"); // 사용자에 대한 정보의 접근범위
+		google.setRedirectUri("http://localhost:8888/login/callback/google");
+		
+		map.put("google",google);
+		
+		
+		// 네이버 등록
+		
+		
+		//카카오 등록
+		
+		
+		return map;
+	}
+	
+	
+	
+	
+	
+	
 	
 }

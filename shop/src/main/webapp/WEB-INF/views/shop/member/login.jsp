@@ -133,6 +133,38 @@
 
 	<!-- Js Plugins -->
 	<%@ include file="../inc/footer_link.jsp" %>
+	<script>
+	// 모든 프로바이더에 대한 sns 로그인 요청 
+	function requestProviderUrl(provider){
+		//비동기
+		$.ajax({
+			url:"/oauth2/authorize/"+provider,	// 곧바로 프로바이더 측에 요청 ? 우리 서버에 요청?
+			method:"GET",
+			success:function(result,status,xhr){
+				console.log("서버로부터 받은 인증 요청 url은 ", result);
+				alert(result);
+				location.href=result;
+			}
+			
+		})
+	}
+	
+		$(()=>{
+			$(".btn-google").click(()=>{
+				requestProviderUrl("google");
+				
+			});
+			$(".btn-naver").click(()=>{
+				requestProviderUrl("naver");
+				
+			});
+			$(".btn-kakao").click(()=>{
+				requestProviderUrl("kakao");
+				
+			});
+			
+		});
+	</script>
 </body>
 
 </html>
