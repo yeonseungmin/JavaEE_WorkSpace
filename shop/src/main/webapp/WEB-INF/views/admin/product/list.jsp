@@ -1,8 +1,10 @@
+<%@page import="com.ch.shop.dto.ProductImg"%>
 <%@page import="com.ch.shop.dto.Product"%>
 <%@page import="org.eclipse.jdt.internal.compiler.parser.RecoveredRequiresStatement"%>
 <%@ page contentType="text/html; charset=UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="com.ch.shop.dto.TopCategory" %>
+
 <%
 	List<Product> productList = (List)request.getAttribute("productList");
 %>
@@ -90,8 +92,14 @@
                     <%for(int i=0; i<productList.size(); i++){ %>
                     <%Product product = productList.get(i); %>
                       <td>1</td>
-                      <td>이미지</td>
-                      <td>서브카테고리</td>
+                      <%
+                      	ProductImg productImg=product.getProductImgList().get(0);
+                      
+                      %>
+                      <td><%-- <%=//"C:/shopdata/produc/p"+product.getProduct_id()+"/"+productImg.getFilename() %> --%>
+                      <img src="/photo/P<%=product.getProduct_id() %>/<%=productImg.getFilename() %>" width="30px">
+                      </td>
+                      <td><%=product.getSubCategory().getSubname() %></td>
                       <td><%=product.getProduct_name() %></td>
                       <td><%=product.getBrand() %></td>
                       <td><%=product.getPrice() %></td>

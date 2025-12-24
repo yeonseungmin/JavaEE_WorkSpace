@@ -55,6 +55,12 @@
               <li class="nav-item">
                 <a href="/admin/product/registform" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
+                  <p>상품목록</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/admin/product/registform" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
                   <p>카테고리 관리</p>
                 </a>
               </li>

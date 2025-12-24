@@ -43,6 +43,11 @@ import com.ch.shop.model.board.BoardServiceImpl;
 @ComponentScan(basePackages = {"com.ch.shop.controller.shop"})
 public class ShopWebConfig extends WebMvcConfigurerAdapter{
 	 
+	// context.xml 등에 명시된 외부 자원을 JNDI 방식으로 읽어들일 수 있는 스프링의 객체
+	@Bean
+	public JndiTemplate jndiTemplate() {
+		return null;
+	}
 
 	
 }

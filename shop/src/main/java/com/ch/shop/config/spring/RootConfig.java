@@ -116,8 +116,9 @@ public class RootConfig extends WebMvcConfigurerAdapter{
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		
-		//registry.addResourceHandler("브라우저로 접근할 주소").addResourceLocations("웹애플리케이션을 기준으로 실제 정적자원이 잇는 위치")
+		//registry.addResourceHandler("브라우저로 접근할 가상의 매핑 주소").addResourceLocations("웹애플리케이션을 기준으로 실제 정적자원이 잇는 위치")
 		registry.addResourceHandler("/static/**").addResourceLocations("/resources/");
+		registry.addResourceHandler("/photo/**").addResourceLocations("file:/C:/shopdata/product/");
 	}
 	//Jackson 라이브러리 사용을 설정 
 	@Override
