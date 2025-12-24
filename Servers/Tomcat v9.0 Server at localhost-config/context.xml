@@ -43,9 +43,6 @@
     				따라서 개발자가 프로젝트 내에 중요한 데이터를 보관할 경우 GitHub 에 올렸을때 발생하는 보안 사고 방지
     		
     	 -->
-		<Environment name="google/client/id" type="java.lang.String" value="376755494648-do6n4em4ugaif7s0bh0gudqhpnq9gq8g.apps.googleusercontent.com"
-		override="false" />    
-		<Environment name="google/client/secret" type="java.lang.String" value="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"
-		override="false" /> 
+
     
 </Context>
