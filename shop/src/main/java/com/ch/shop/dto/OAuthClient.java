@@ -10,6 +10,8 @@ public class OAuthClient {
 	private String clientSecret;	// 앱 등록시 개발자 콘솔에서 발급받은 클라이언트 비밀번호(보안상 매우 중요) - 비공개 처리
 	private String authorizeUrl; // 클라이언트가 sns 로그인 버튼을 누를때 요청대상 URL 
 	private String tokenUrl; // 리소스 오너의 정보를 조회할 때 사용할 요청 주소URL 
+	
+	private String userInfoUrl;// 구글에 등록된 사용자 정보를 조회할때 사용할 URL
 	private String scope; // 접근 범위 
 	private String redirectUri; // Provider 로부터 콜백받을 주소 (가장중요)
 }

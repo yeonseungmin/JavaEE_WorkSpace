@@ -7,7 +7,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import com.ch.shop.dto.GoogleUser;
 import com.ch.shop.dto.OAuthClient;
+import com.ch.shop.dto.OAuthTokenResponse;
 import com.ch.shop.model.topcategory.TopCategoryService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -86,10 +90,11 @@ public class MemberController {
 		// 구글로부터 받은 임시코드와 나의 정보 (client id, client secret) 를 조합하여 구글에게 보내자.. (토큰을 받으려고)
 		// 이때, 구글과 같은 프로바이더와 데이터를 주고 받기 위해서는 HTTP 통신규약을 지켜서 말을 걸때는 머리,몸을 구성하며 요청을 시도해야함
 		MultiValueMap<String, String> param = new LinkedMultiValueMap<String, String>();
-		param.add("code", code); // 구글로부터 받은 임시코드를 그대로 추가
-		param.add("client_id",google.getClientId());	//전송할 id 추가
+		param.add("grant_type","authorization_code");			// 임시코드를 이용하여 토큰을 요청하겠다는 것을 명시
+		param.add("code", code); 										// 구글로부터 받은 임시코드를 그대로 추가
+		param.add("client_id",google.getClientId());				//전송할 id 추가
 		param.add("client_secret", google.getClientSecret());	//전송할 pwd 추가
-		param.add("redirect_uri", google.getAuthorizeUrl());		//callback url 추가
+		param.add("redirect_uri", google.getRedirectUri());		//callback url 추가
 		
 		HttpHeaders headers = new HttpHeaders();	//머리 만들기
 		//아래와 같이 전송 파라미터에 대한 contentType 을 명시하면 , key=value&key=value 방식의 데이터 쌍으로 자동으로 변환
@@ -103,7 +108,34 @@ public class MemberController {
 		/*
 		 * restTemplate.postForEntity("google토큰발급주소", "요청객체(머리와 몸을 합친)", "결과를 받을 클래스");
 		 */
-		restTemplate.postForEntity(google.getTokenUrl(), request, 결과를 받을 클래스);
+		ResponseEntity<OAuthTokenResponse> response=restTemplate.postForEntity(google.getTokenUrl(), request, OAuthTokenResponse.class);
+		log.debug("구글로 부터 받은 응답정보는 ={}",response.getBody());
+		
+		/*-----------------------------------------------------------------------------------------
+		 * 얻어진 토큰으로 구글에 회원정보를 요청해보기
+		 * -----------------------------------------------------------------------------------------*/
+		OAuthTokenResponse responsebody=response.getBody();
+		String access_token = responsebody.getAccess_token();
+		log.debug("구글로부터 받은 access_token은 {}",access_token);
+		
+		/*-----------------------------------------------------------------------------------------
+		 * 회원 정보 가져오기
+		 * 구글에 요청을 시도하려면 역시나 이번에도 Http프로토콜의 형식을 갖춰야함
+		 * -----------------------------------------------------------------------------------------*/
+		HttpHeaders userInfoHeaders = new HttpHeaders();
+		//내가 바로 토큰을 가진 자임을 알리는 헤더 속성값을 넣어야 함..
+		userInfoHeaders.add("Authorization","Bearer "+access_token);
+		HttpEntity<String> userInfoRequest = new HttpEntity<>("" ,userInfoHeaders);
+		 // 서버로부터 데이터를 가져오기 임으로  exchange() 사용
+		ResponseEntity<GoogleUser> userInfoResponse=restTemplate.exchange(google.getUserInfoUrl(), HttpMethod.GET,userInfoRequest,GoogleUser.class);
+		log.debug("사용자 정보는 {}",userInfoResponse);
+		
+		/*얻어진 유저 정보를 이용하여 할일
+		 * 1) 얻어진 회원이 우리의 mysql 존재하는지를 따져
+		 * 있다면? 로그인 세션만 부여하고 홈페이지 메인으로 보내기
+		 * 없다면? member테이블에 insert 하고 세션부여하고 홈페이지 메인으로 보내기
+		 * 
+		 * */
 		
 		return null;
 	}

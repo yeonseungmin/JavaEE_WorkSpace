@@ -97,6 +97,7 @@ public class ShopWebConfig extends WebMvcConfigurerAdapter{
 		google.setClientSecret(googleClientSecret);
 		google.setAuthorizeUrl("https://accounts.google.com/o/oauth2/v2/auth");	//googleAPI 문서에 나와있다.
 		google.setTokenUrl("https://oauth2.googleapis.com/token"); // 토큰을 요청할 주소
+		google.setUserInfoUrl("https://openidconnect.googleapis.com/v1/userinfo");
 		google.setScope("openid email profile"); // 사용자에 대한 정보의 접근범위
 		google.setRedirectUri("http://localhost:8888/login/callback/google");
 		
