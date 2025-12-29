@@ -1,3 +1,4 @@
+<%@page import="com.ch.shop.dto.Member"%>
 <%@ page contentType="text/html; charset=UTF-8"%>
     <header class="header">
         <div class="container-fluid">
@@ -31,8 +32,14 @@
                 <div class="col-lg-3">
                     <div class="header__right">
                         <div class="header__right__auth">
+                        <%if(session.getAttribute("member")==null){ %>
                             <a href="/member/loginform">Login</a>
                             <a href="/member/loginform">Register</a>
+                            <%}else{%>
+                            <a href="/member/loginform">MyPage</a>
+                            <a href="/member/loginform"><%Member member = (Member)session.getAttribute("member"); %></a>
+                            <a href="#"><%=member.getName() %></a>
+                            <% }%>
                         </div>
                         <ul class="header__right__widget">
                             <li><span class="icon_search search-switch"></span></li>

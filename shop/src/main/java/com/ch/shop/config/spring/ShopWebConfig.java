@@ -54,13 +54,7 @@ public class ShopWebConfig extends WebMvcConfigurerAdapter{
 		return new RestTemplate();
 	}
 	
-	//수동매핑
-	// context.xml 등에 명시된 외부 자원을 JNDI 방식으로 읽어들일 수 있는 스프링의 객체
-	@Bean
-	public JndiTemplate jndiTemplate() {
-		
-		return new JndiTemplate();
-	}
+
 	
 	/*----------------------------------------------------------------
 	 * Google
@@ -76,6 +70,34 @@ public class ShopWebConfig extends WebMvcConfigurerAdapter{
 		return (String)jndiTemplate.lookup("java:comp/env/google/client/secret");
 	}
 	
+	/*----------------------------------------------------------------
+	 * naver
+	 *----------------------------------------------------------------- */
+	
+	@Bean
+	public String naverClientId(JndiTemplate jndiTemplate) throws Exception{
+		return (String)jndiTemplate.lookup("java:comp/env/naver/client/id");
+	}
+	
+	@Bean
+	public String naverClientSecret(JndiTemplate jndiTemplate) throws Exception{
+		return (String)jndiTemplate.lookup("java:comp/env/naver/client/secret");
+	}
+	
+	/*----------------------------------------------------------------
+	 * kakao
+	 *----------------------------------------------------------------- */
+	
+	@Bean
+	public String kakaoClientId(JndiTemplate jndiTemplate) throws Exception{
+		return (String)jndiTemplate.lookup("java:comp/env/kakao/client/id");
+	}
+	
+	@Bean
+	public String kakaoClientSecret(JndiTemplate jndiTemplate) throws Exception{
+		return (String)jndiTemplate.lookup("java:comp/env/kakao/client/secret");
+	}
+	
 	/*
 	 * OAuth 로그인 시 사용되는 환경변수 (요청주소, 콜백주소 .. 등등)는 객체로 담아서 관리하면 유지보수하기 좋다.
 	 * 우리의 경우 여로 Provider를 연동할 것이기 때문에 OAuthClient 객체를 여러개 메모리에 보관해 놓자.
@@ -84,7 +106,11 @@ public class ShopWebConfig extends WebMvcConfigurerAdapter{
 	@Bean
 	public Map<String, OAuthClient> oauthClients(
 			@Qualifier("googleClientId") String googleClientId,
-			@Qualifier("googleClientSecret") String googleClientSecret
+			@Qualifier("googleClientSecret") String googleClientSecret,
+			@Qualifier("naverClientId") String naverClientId,
+			@Qualifier("naverClientSecret") String naverClientSecret,
+			@Qualifier("kakaoClientId") String kakaoClientId,
+			@Qualifier("kakaoClientSecret") String kakaoClientSecret
 			
 			){
 		// 구글 , 네이버, 카카오를 각각 OAuthClient 인스턴스 담은 후, 다시 Map에 모아두자
@@ -105,10 +131,31 @@ public class ShopWebConfig extends WebMvcConfigurerAdapter{
 		
 		
 		// 네이버 등록
+		OAuthClient naver = new OAuthClient();
+		naver.setProvider("naver");
+		naver.setClientId(naverClientId);
+		naver.setClientSecret(naverClientSecret);
+		naver.setAuthorizeUrl("https://nid.naver.com/oauth2.0/authorize");	//googleAPI 문서에 나와있다.
+		naver.setTokenUrl("https://nid.naver.com/oauth2.0/token"); // 토큰을 요청할 주소
+		naver.setUserInfoUrl("https://openapi.naver.com/v1/nid/me");
+		naver.setScope("name email"); // 사용자에 대한 정보의 접근범위
+		naver.setRedirectUri("http://localhost:8888/login/callback/naver");
+		
+		map.put("naver",naver);
 		
 		
 		//카카오 등록
+		OAuthClient kakao = new OAuthClient();
+		kakao.setProvider("kakao");
+		kakao.setClientId(kakaoClientId);
+		kakao.setClientSecret(kakaoClientSecret);
+		kakao.setAuthorizeUrl("https://kauth.kakao.com/oauth/authorize");	
+		kakao.setTokenUrl("https://kauth.kakao.com/oauth/token");
+		kakao.setUserInfoUrl("https://kapi.kakao.com/v2/user/me");
+		kakao.setScope("profile_nickname");
+		kakao.setRedirectUri("http://localhost:8888/login/callback/kakao");
 		
+		map.put("kakao",kakao);
 		
 		return map;
 	}

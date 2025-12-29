@@ -33,6 +33,14 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @EnableTransactionManagement
 public class RootConfig extends WebMvcConfigurerAdapter{
 
+	//수동매핑
+	// context.xml 등에 명시된 외부 자원을 JNDI 방식으로 읽어들일 수 있는 스프링의 객체
+	@Bean
+	public JndiTemplate jndiTemplate() {
+		
+		return new JndiTemplate();
+	}
+	
 	/*
 	  스프링이 MVC 프레임워크 중 컨트롤러 영역만을 지원하는 것이 아니라, 데이터베이스 관련 제어도 지원하므로, 
 	  지금까지 순수하게 사용해왔던 mybatis를 스프링이 지원하는 mybatis로 전환해본다
@@ -125,4 +133,18 @@ public class RootConfig extends WebMvcConfigurerAdapter{
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 		converters.add(new MappingJackson2HttpMessageConverter());//Jackson 객체를 넣기 }
 	}
+	
+	/*----------------------------------------------------
+	  메일에 사용될 비밀번호를 가진 Bean 등록
+	----------------------------------------------------*/
+	@Bean
+	public String emailPassword(JndiTemplate jndiTemplate) throws Exception{
+		
+		return (String)jndiTemplate.lookup("java:comp/env/email/app/password");	//앱 비밀번호
+	}
+	
+	
+	
+	
+	
 }

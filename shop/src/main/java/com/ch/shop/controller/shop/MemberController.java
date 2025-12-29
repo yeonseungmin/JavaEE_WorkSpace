@@ -5,6 +5,8 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +23,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.ch.shop.dto.GoogleUser;
+import com.ch.shop.dto.KakaoAccount;
+import com.ch.shop.dto.KakaoUserResponse;
 import com.ch.shop.dto.Member;
+import com.ch.shop.dto.NaverUser;
+import com.ch.shop.dto.NaverUserResponse;
 import com.ch.shop.dto.OAuthClient;
 import com.ch.shop.dto.OAuthTokenResponse;
 import com.ch.shop.dto.Provider;
@@ -41,7 +47,7 @@ public class MemberController {
 	@Autowired
 	private Map<String, OAuthClient> oauthClients;
 	@Autowired
-	private RestTemplate restTemplate;
+	private RestTemplate restTemplate;	// http 요청능력 + 응답결과를 자동으로 java 객체로 매핑(마치 jackson처럼)
 	@Autowired
 	private MemberService memberService;
 	@Autowired
@@ -87,7 +93,7 @@ public class MemberController {
 	 * 개발자가 등록해놓은 callback주소로 임시 코드(Authorize code)를 발급한다.
 	 *--------------------------------------------------------------------------*/
 	@GetMapping("/login/callback/google")
-	public String handleGoogleCallback(String code) {
+	public String handleGoogleCallback(String code,HttpSession session) {
 		/*--------------------------------------------------------------------------------
 		 *  구글이 보내온 인증 코드와  , 나의 clientId, client Secret 를 조합하여, token을 요청하자.
 		 *  결국 개발자가 원하는 것은 사용자의 정보 임으로 , 이 정보를 얻기 위해서는 토큰이 필요함으로 ..
@@ -160,6 +166,154 @@ public class MemberController {
 
 		memberService.registOrUpdate(member);
 		
-		return null;
+//		/*------------------------------------------------속상한 코드--------------------------------------------*/
+//		List topList=topCategoryService.getList();//3단계
+//		//4단계 결과 페이지로 가져갈것이 있따.
+//		model.addAttribute("topList", topList);
+//		/*------------------------------------------------------------------------------------------------------*/
+		
+		
+		//로그인에 성공하면 브라우저를 종료할때 까지는 자신의 정보를 접근할 수 있는 혜택을 부여해야하므로
+		// 세션에 회원 정보를 담아 둬야 한다.
+		//jsp 의 내장객체중 세션을 담당하는 내장객체명은 session 이고 , 서블릿에서 자료형은 HttpSession이다.
+		//jsp 의 내장객체중 요청정보를 담당하는 내장객체명은 request 이고 , 서블릿에서 자료형은 HttpRequest이다.
+		session.setAttribute("member", member);
+		
+		
+		return "redirect:/";// 회원 로그인이 처리되면, 쇼핑몰의 메인으로 보내기
 	}
+	
+	//네이버 로그인 (콜백함수)요청 처리
+	@GetMapping("/login/callback/naver")
+	public String handleNaverLogin(String code, HttpSession session){
+		log.debug("네이버에서 발급한 임시코드는 ={}",code);
+		/*-----------------------------------------------------------------------------------------
+		1) code, client id, client secret 을 구성하여 토큰 발급을 요청
+		  ---------------------------------------------------------------------------------------*/
+		// 몸체 구성
+		OAuthClient client =oauthClients.get("naver");
+		MultiValueMap<String, String> param = new LinkedMultiValueMap<String, String>();
+		param.add("grant_type","authorization_code");			// 임시코드를 이용하여 토큰을 요청하겠다는 것을 명시
+		param.add("code", code); 										// 구글로부터 받은 임시코드를 그대로 추가
+		param.add("client_id",client.getClientId());				//전송할 id 추가
+		param.add("client_secret", client.getClientSecret());	//전송할 pwd 추가
+		param.add("redirect_uri", client.getRedirectUri());		//callback url 추가
+		
+		//머리 만들기
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);	// 폼전송을위한 헤더값
+		
+		// 몸 +머리
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity(param,headers);
+		
+		// 토큰 요청하기 (구글, 네이버, 카카오, 마타 등 거의 모든 프로바이더가 토큰을 포함한 응답정보의 내용이 같다.)
+		ResponseEntity<OAuthTokenResponse> response = restTemplate.postForEntity(client.getTokenUrl(), request, OAuthTokenResponse.class);
+		log.debug("네이버가 응답한 토큰 포함 정보는 ={}",response);
+		OAuthTokenResponse responseBody = response.getBody();
+		
+		/*-----------------------------------------------------------------------------------------
+		2) 발급된 토큰을 이용하여 회원 정보 조회하기
+		  ---------------------------------------------------------------------------------------*/
+		String access_token = responseBody.getAccess_token();
+		log.debug("네이버의 토큰은 ={}",access_token);
+		
+		HttpHeaders userInfoHeaders = new HttpHeaders();
+		userInfoHeaders.add("Authorization","Bearer "+access_token);
+		
+		HttpEntity<String> userInfoRequest = new HttpEntity<>("",userInfoHeaders);// 몸은 비워놓고, 몸과 머리 합쳐 요청 보내기
+		//Get 방식으로 사용자 정보 요청하기
+		//restTemplate.exchange(client.getUserInfoUrl(), HttpMethod.GET,userInfoRequest,매핑될클래스);
+		ResponseEntity<NaverUserResponse> userInfoResponse = restTemplate.exchange(client.getUserInfoUrl(), HttpMethod.GET,userInfoRequest,NaverUserResponse.class);
+		
+		NaverUserResponse naverUserResponse = userInfoResponse.getBody();
+		NaverUser naverUser = naverUserResponse.getResponse();
+		
+		log.debug("고유 id= {}", naverUser.getId());
+		log.debug("이름 = {}", naverUser.getName());
+		log.debug("이메일 = {}", naverUser.getEmail());
+		
+		/*-----------------------------------------------------------------------------------------
+		3) 로그인 처리
+				- 최초의 로그인 시도자는 회원가입을 처리
+				- 기존 가입자는, 로그인만 처리( 회원 정보 업데이트)
+				- 세션에 회원정보 저장
+		  ---------------------------------------------------------------------------------------*/
+
+		Member member = new Member();
+		member.setProvider_userid(naverUser.getId());
+		member.setName(naverUser.getName());
+		member.setEmail(naverUser.getEmail());
+		//select* from provider where provider_name='google; 인 경우르 찾아야기에 ProviderMapper 로 이동
+		Provider provider = providerService.selectByName(client.getProvider());
+		member.setProvider(provider);
+	
+
+		memberService.registOrUpdate(member);
+		
+		session.setAttribute("member", member);
+		
+		
+		return "redirect:/";
+	}
+	// 카카오 로그인 (콜백)
+	@GetMapping("/login/callback/kakao")
+	public String handleKakaoLogin(String code, HttpSession session) {
+
+	    OAuthClient client = oauthClients.get("kakao");
+
+	    // 1️⃣ 토큰 요청
+	    MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
+	    param.add("grant_type", "authorization_code");
+	    param.add("code", code);
+	    param.add("client_id", client.getClientId());
+	    param.add("client_secret", client.getClientSecret());
+	    param.add("redirect_uri", client.getRedirectUri());
+
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+	    OAuthTokenResponse tokenResponse =
+	        restTemplate.postForEntity(
+	            client.getTokenUrl(),
+	            new HttpEntity<>(param, headers),
+	            OAuthTokenResponse.class
+	        ).getBody();
+
+	    String accessToken = tokenResponse.getAccess_token();
+
+	    // 2️⃣ 사용자 정보 요청
+	    HttpHeaders userInfoHeaders = new HttpHeaders();
+	    userInfoHeaders.add("Authorization", "Bearer " + accessToken);
+
+	    ResponseEntity<KakaoUserResponse> userInfoResponse =
+	        restTemplate.exchange(
+	            client.getUserInfoUrl(),
+	            HttpMethod.GET,
+	            new HttpEntity<>("", userInfoHeaders),
+	            KakaoUserResponse.class
+	        );
+
+	    KakaoUserResponse kakao = userInfoResponse.getBody();
+
+	    String providerUserId = kakao.getId().toString();
+	    String nickname = kakao.getKakao_account()
+	                           .getProfile()
+	                           .getNickname();
+
+	    // 3️⃣ 로그인 / 회원가입
+	    Member member = new Member();
+	    member.setProvider_userid(providerUserId);
+	    member.setName(nickname);
+	    member.setEmail(null); // ⭐ 닉네임만 사용
+
+	    Provider provider = providerService.selectByName("kakao");
+	    member.setProvider(provider);
+
+	    memberService.registOrUpdate(member);
+	    session.setAttribute("member", member);
+
+	    return "redirect:/";
+	}
+
+
 }
