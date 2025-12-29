@@ -84,8 +84,30 @@ create table product_color(
 	constraint fk_color_product_color foreign key(color_id) references color(color_id)
 );
 
+create table provider(
+	provider_id int primary key auto_increment
+	,provider_name varchar(15)
+);
 
+insert into provider(provider_name) values('google');
+insert into provider(provider_name) values('naver');
+insert into provider(provider_name) values('kakao');
+insert into provider(provider_name) values('homepage');
 
+																									-- CURRENT_TIMESTAMP  = now() 와 같은역활
+																									--CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP 수정이 들어오면 즉시 수정 시간 반영
+create table member(
+	member_id int primary key auto_increment
+	, home_id varchar(20) UNIQUE
+	, home_pass varchar(64)
+	, provider_userid varchar(100)
+	, name varchar(30)
+	, email varchar(40)
+	, regdate timestamp default CURRENT_TIMESTAMP
+	, updated timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
+	, provider_id int
+	, constraint fk_provider_member foreign key (provider_id) references provider(provider_id) 
+);
 
 
 

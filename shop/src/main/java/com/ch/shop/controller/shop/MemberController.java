@@ -1,5 +1,6 @@
 package com.ch.shop.controller.shop;
 
+
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +21,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.ch.shop.dto.GoogleUser;
+import com.ch.shop.dto.Member;
 import com.ch.shop.dto.OAuthClient;
 import com.ch.shop.dto.OAuthTokenResponse;
+import com.ch.shop.dto.Provider;
+import com.ch.shop.model.member.MemberService;
+import com.ch.shop.model.member.ProviderService;
 import com.ch.shop.model.topcategory.TopCategoryService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +42,10 @@ public class MemberController {
 	private Map<String, OAuthClient> oauthClients;
 	@Autowired
 	private RestTemplate restTemplate;
+	@Autowired
+	private MemberService memberService;
+	@Autowired
+	private ProviderService providerService;
 	
 	//회원 로그인폼 요청 처리
 	@GetMapping("/member/loginform")
@@ -126,16 +135,30 @@ public class MemberController {
 		//내가 바로 토큰을 가진 자임을 알리는 헤더 속성값을 넣어야 함..
 		userInfoHeaders.add("Authorization","Bearer "+access_token);
 		HttpEntity<String> userInfoRequest = new HttpEntity<>("" ,userInfoHeaders);
-		 // 서버로부터 데이터를 가져오기 임으로  exchange() 사용
+		
+		// 서버로부터 데이터를 가져오기 임으로  exchange() 사용
 		ResponseEntity<GoogleUser> userInfoResponse=restTemplate.exchange(google.getUserInfoUrl(), HttpMethod.GET,userInfoRequest,GoogleUser.class);
 		log.debug("사용자 정보는 {}",userInfoResponse);
 		
-		/*얻어진 유저 정보를 이용하여 할일
+		/*-----------------------------------------------------------------------------------------
+		 * 얻어진 유저 정보를 이용하여 할일
 		 * 1) 얻어진 회원이 우리의 mysql 존재하는지를 따져
 		 * 있다면? 로그인 세션만 부여하고 홈페이지 메인으로 보내기
 		 * 없다면? member테이블에 insert 하고 세션부여하고 홈페이지 메인으로 보내기
-		 * 
+		 * -----------------------------------------------------------------------------------------
 		 * */
+		
+		GoogleUser user=userInfoResponse.getBody();
+		Member member = new Member();
+		member.setProvider_userid(user.getId());
+		member.setName(user.getName());
+		member.setEmail(user.getEmail());
+		//select* from provider where provider_name='google; 인 경우르 찾아야기에 ProviderMapper 로 이동
+		Provider provider = providerService.selectByName("google");
+		member.setProvider(provider);
+	
+
+		memberService.registOrUpdate(member);
 		
 		return null;
 	}
