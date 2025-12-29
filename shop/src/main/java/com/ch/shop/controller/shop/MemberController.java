@@ -78,7 +78,7 @@ public class MemberController {
 	 * 개발자가 등록해놓은 callback주소로 임시 코드(Authorize code)를 발급한다.
 	 *--------------------------------------------------------------------------*/
 	@GetMapping("/login/callback/google")
-	public String handleCallback(String code) {
+	public String handleGoogleCallback(String code) {
 		/*--------------------------------------------------------------------------------
 		 *  구글이 보내온 인증 코드와  , 나의 clientId, client Secret 를 조합하여, token을 요청하자.
 		 *  결국 개발자가 원하는 것은 사용자의 정보 임으로 , 이 정보를 얻기 위해서는 토큰이 필요함으로 ..
