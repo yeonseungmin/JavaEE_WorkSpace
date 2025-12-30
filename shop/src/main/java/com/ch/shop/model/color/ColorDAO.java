@@ -6,5 +6,4 @@ public interface ColorDAO {
 
 	public List selectAll();
 	
-	
 }

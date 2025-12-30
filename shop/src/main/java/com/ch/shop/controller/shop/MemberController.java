@@ -56,10 +56,8 @@ public class MemberController {
 	//회원 로그인폼 요청 처리
 	@GetMapping("/member/loginform")
 	public String getLoginForm(Model model) {
-		List topList=topCategoryService.getList();//3단계
+
 		
-		//4단계 결과 페이지로 가져갈것이 있따.
-		model.addAttribute("topList", topList);
 		return "shop/member/login";
 	}
 	

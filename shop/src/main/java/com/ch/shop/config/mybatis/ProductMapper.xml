@@ -37,6 +37,10 @@
  	 <association column="자식의 id" property="아래 속성이 있다면"
  		select="SubCategory.select"
  	-->
+ 	
+
+ 	
+ 	
  	<association column="subcategory_id" property="subCategory"
  		select="SubCategory.select"
  	/>
@@ -45,21 +49,68 @@
  	<collection property="">
  		collection 이란 자식의 여러 레코드를 가져오는 기능  
  		Product DTO 와 같이 수정
- 		<collection column="부모의 아이디" property="멤버변수" select="ProductImg.selectByProductId"
- 		javaType="라이브러리 명" ofType="제너릭"/>
+ 		<collection 
+	 		column="부모의 아이디" 
+	 		property="멤버변수" 
+	 		select="ProductImg.selectByProductId"
+	 		javaType="라이브러리 명" 
+	 		ofType="제너릭"
+ 		/>
  	
  	-->
- 	<collection column="product_id" property="productImgList" select="ProductImg.selectByProductId"
- 	javaType="java.util.List" ofType="ProductImg"/>
+ 	<collection 
+ 	column="product_id" 
+ 	property="productImgList" 
+ 	select="ProductImg.selectByProductId"
+ 	javaType="java.util.List" 
+ 	ofType="ProductImg"/>
+ 	 	
+ 	 <!-- 상품에 소속된 색상 가져와서, colorList 속성에 채워넣기 -->
+ 	<collection 
+ 	column="product_id" 
+ 	select="Color.selectByProductId" 
+ 	property="colorList" 
+ 	javaType="java.util.List" 
+ 	ofType="Color"/>
+ 	
+ 	<collection 
+ 	column="product_id" 
+ 	select="Size.selectByProductId" 
+ 	property="sizeList" 
+ 	javaType="java.util.List" 
+ 	ofType="Size"/>
  	
  </resultMap>
  
+ <!-- 공통 쿼리를 정의  -->
+ <sql id="sql_select">
+ 	select product_id, product_name, brand, price, discount,introduce, detail, subcategory_id
+	from product
+ </sql>
+ 
 <!-- 모든 상품 가져오기  resultType = DTO -->
 <select id="selectAll" resultMap="productMap">
-	select product_id, product_name, brand, price, discount,introduce, detail, subcategory_id
-	from product
-	
+	<include refid="sql_select"/> 
+</select>
 
+<!-- 하위 카테고리에 소속된 상품만 가져오기 -->
+<select id="selectBySubCategoryId" parameterType="int" resultMap="productMap">
+	<include refid="sql_select"/>
+	
+	<!-- mybatis 의 조건문 -->
+	<where>
+		<!-- _parameter 는 이름없는 parameterType="int" 를 뜻한다. -->
+		<if test="_parameter!=0">
+			subcategory_id=#{subcategory_id}
+		</if>
+	</where>
+	
+</select>
+
+<!-- 상품 한건 가져오기 -->
+<select id="select" parameterType="int" resultMap="productMap">
+	<include refid="sql_select"/>
+		where product_id=#{product_id}
 </select>
 
 

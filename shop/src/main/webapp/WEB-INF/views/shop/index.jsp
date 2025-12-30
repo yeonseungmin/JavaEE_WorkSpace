@@ -1,9 +1,6 @@
-<%@page import="com.ch.shop.dto.TopCategory"%>
+
 <%@ page contentType="text/html; charset=UTF-8"%>
-<%@ page import="java.util.List" %>
-<%
-	List<TopCategory> topList = (List)request.getAttribute("topList");
-%>
+
 
 <!DOCTYPE html>
 <html lang="zxx">
@@ -606,7 +603,7 @@
 <!-- Services Section End -->
 
 <!-- Instagram Begin -->
-<%@ include file="./inc/instar.jsp" %>
+<%@ include file="./inc/insta.jsp" %>
 <!-- Instagram End -->
 
 <!-- Footer Section Begin -->
