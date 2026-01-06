@@ -12,10 +12,10 @@ import lombok.Data;
 public class Cart {
 	
 	/* 장바구니에 출력할 내용을 담을 DTO */
-	private int product_id;
+	private int member_id;	//누가
+	private int product_id;		//무엇을? (어떤상품을)
 	private String product_name;
-	private String filename;
 	private int price;
-	private int ea;
+	private int ea;	// 몇개나?
 	
 }

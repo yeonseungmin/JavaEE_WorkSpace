@@ -1,5 +1,7 @@
 package com.ch.shop.controller.shop;
 
+import java.lang.annotation.Repeatable;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -22,10 +24,19 @@ public class LoginCheckInterceptor implements HandlerInterceptor{
 		HttpSession session = request.getSession();
 		
 		if(session == null || session.getAttribute("member")==null) {	// 로그인 하지 않았을경우, 세션이 없거나 or 세션에 멤버값이 없을경우
-			response.sendRedirect("/member/loginform");
+			
+			String asyncHeader = request.getHeader("X-Requested-With");
+			
+			if(asyncHeader !=null && asyncHeader.equals("XMLHttpRequest")) { // 비동기로 요청이 들어온 경우 응답메시지로 처리(JSON)
+				response.setContentType("application/json; charset=UTF-8");
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);	// 로그인을 하지 않고 접근할경우 에러메세지
+				response.getWriter().write("{\"msg\" : \"로그인이 필요한 서비스입니다.\"}");
+			}else {	// 동기로 요청이 들어온 경우 . .응답 페이지로 처리
+				response.sendRedirect("/member/loginform");
+			}
 			return false;
 		}
-		return true;	// 가던길 그대로 진행 ture, 진행 막음 false
+		return true;	// 가던길 그대로 진행 true, 진행 막음 false
 	}
 
 	@Override

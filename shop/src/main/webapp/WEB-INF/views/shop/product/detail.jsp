@@ -1,10 +1,10 @@
-<%@page import="com.ch.shop.dto.Size"%>
-<%@page import="com.ch.shop.dto.Color"%>
-<%@page import="com.ch.shop.dto.ProductImg"%>
 <%@page import="com.ch.shop.util.MoneyConverter"%>
 <%@ page contentType="text/html; charset=UTF-8"%>
 <%@ page import="com.ch.shop.dto.SubCategory" %>
 <%@ page import="com.ch.shop.dto.Product" %>
+<%@ page import="com.ch.shop.dto.ProductImg" %>
+<%@ page import="com.ch.shop.dto.Color" %>
+<%@ page import="com.ch.shop.dto.Size" %>
 <% 
 	Product product=(Product)request.getAttribute("product");
 %>
@@ -53,22 +53,21 @@
     <!-- Header Section Begin -->
     <%@ include file="../inc/header.jsp" %>
     <!-- Header Section End -->
-    
-    <!-- breadcrumb-option 시작 -->
+	
+	<!-- BreadCrumb Begin -->
 	<div class="breadcrumb-option">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="breadcrumb__links">
                         <a href="./index.html"><i class="fa fa-home"></i> Home</a>
-                        <span>상품 상세보기</span>
+                        <span>상품 상세보기 </span>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- breadcrumb-option 끝 -->
-    
+    </div>	
+    <!-- BreadCrumb End -->
 	
 	<!-- 상품 상세 Begin -->
 	<section class="product-details spad">
@@ -80,106 +79,114 @@
 	                            
 	                            <%for(ProductImg productImg : product.getProductImgList()){ %>
 	                            <a class="pt active" href="#product-1">
-	                                <img src="/photo/P<%=product.getProduct_id() %>/<%=productImg.getFilename() %>" alt="">
+	                                <img src="/photo/p<%=product.getProduct_id()%>/<%=productImg.getFilename()%>" alt="">
 	                            </a>
-								<%} %>
+	                            <%} %>
+	                            
 	                        </div>
-	                        
 	                        <div class="product__details__slider__content">
 	                            <div class="product__details__pic__slider owl-carousel owl-loaded">
-
-	                            <div class="owl-stage-outer">
-		                            <div class="owl-stage" style="transform: translate3d(0px, 0px, 0px); transition: all; width: 1324px;">
-			                            <%for(ProductImg productImg : product.getProductImgList()){ %>
+		                            <div class="owl-stage-outer">
+			                            <div class="owl-stage" style="transform: translate3d(0px, 0px, 0px); transition: all; width: 1324px;">
+											<%for(ProductImg productImg : product.getProductImgList()){%>				                            
 				                            <div class="owl-item active" style="width: 331px;">
-					                            <img data-hash="product-1" class="product__big__img" src="/photo/P<%=product.getProduct_id() %>/<%=productImg.getFilename()%>" alt="">
+				                            	<img data-hash="product-1" class="product__big__img" src="/photo/p<%=product.getProduct_id()%>/<%=productImg.getFilename()%>" alt="">
 				                            </div>
-										<%} %>
+				                            <%} %>
+				                          
+			                            </div>
 		                            </div>
-	                            </div>
 		                            <div class="owl-nav">
-			                            <button type="button" role="presentation" class="owl-prev disabled">
-			                           		<i class="arrow_carrot-left"></i>
-			                            </button>
-				                          	<button type="button" role="presentation" class="owl-next">
-				                            <i class="arrow_carrot-right"></i>
-			                            </button>
+			                            <button type="button" role="presentation" class="owl-prev disabled"><i class="arrow_carrot-left"></i></button>
+			                            <button type="button" role="presentation" class="owl-next"><i class="arrow_carrot-right"></i></button>
 		                            </div>
-		                            	<div class="owl-dots disabled">
-		                            </div>
+		                            <div class="owl-dots disabled"></div>
 	                            </div>
 	                        </div>
 	                    </div>
 	                </div>
-	                <div class="col-lg-6">
-	                    <div class="product__details__text">
-	                        <h3><%=product.getProduct_name() %> <span>Brand: <%=product.getBrand() %></span></h3>
-	                        <div class="rating">
-	                            <i class="fa fa-star"></i>
-	                            <i class="fa fa-star"></i>
-	                            <i class="fa fa-star"></i>
-	                            <i class="fa fa-star"></i>
-	                            <i class="fa fa-star"></i>
-	                            <span>( 138 reviews )</span>
-	                        </div>
-	                        <div class="product__details__price"><%=MoneyConverter.format(product.getPrice()) %> <span><%=MoneyConverter.format(product.getDiscount()) %></span></div>
-	                        <p>Nemo enim ipsam voluptatem quia aspernatur aut odit aut loret fugit, sed quia consequuntur
-	                        magni lores eos qui ratione voluptatem sequi nesciunt.</p>
-	                        <div class="product__details__button">
-	                            <div class="quantity">
-	                                <span>Quantity:</span>
-	                                <div class="pro-qty"><span class="dec qtybtn">-</span>
-	                                    <input type="text" value="1">
-	                                <span class="inc qtybtn">+</span></div>
-	                            </div>
-	                            <a href="javascript:addCart(<%=product.getProduct_id()%>)" class="cart-btn"><span class="icon_bag_alt"></span> Add to cart</a>
-	                            <ul>
-	                                <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-	                                <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
-	                            </ul>
-	                        </div>
-	                        <div class="product__details__widget">
-	                            <ul>
-	                                <li>
-	                                    <span>Availability:</span>
-	                                    <div class="stock__checkbox">
-	                                        <label for="stockin">
-	                                            In Stock
-	                                            <input type="checkbox" id="stockin">
-	                                            <span class="checkmark" ></span>
-	                                        </label>
-	                                    </div>
-	                                </li>
-	                                <li>
-	                                    <span>Available color:</span>
-	                                    <div class="color__checkbox">
-	                                    <%for(Color color :product.getColorList()){ %>
-	                                        <label for="<%=color.getColor_name() %>">
-	                                            <input type="radio" name="color__radio" id="<%=color.getColor_name() %>" checked="">
-	                                            <span class="checkmark <%=color.getColor_name()%>-bg"></span>
-	                                        </label>
-										<%} %>
-	                                    </div>
-	                                </li>
-	                                <li>
-	                                    <span>Available size:</span>
-	                                    <div class="size__btn">
-	                                    <%for(Size size : product.getSizeList()){ %>
-	                                        <label for="<%=size.getSize_name() %>" class="active">
-	                                            <input type="radio" id="<%=size.getSize_name() %>">
-	                                            <%=size.getSize_name() %>
-	                                        </label>
-										<%} %>
-	                                    </div>
-	                                </li>
-	                                <li>
-	                                    <span>Promotions:</span>
-	                                    <p>Free shipping</p>
-	                                </li>
-	                            </ul>
-	                        </div>
-	                    </div>
-	                </div>
+	                
+	                <form id="detail-form">
+	                	<!-- 장바구니에 담을 상품명과 가격은 현재 텍스트에 불과하기 때문에 전송 시 
+	                		파라미터를 처리할때 접근용으로 사용될 히든 컴포넌트를 정의 
+	                		특히,  JQuer Ajax를 사용 시 파라미터화를 자동으로 처리할수 있다..(serialize() 사용가능)
+	                	 -->
+                	 	<input type="hidden" name="product_id" value="<%=product.getProduct_id() %>">
+	                	<input type="hidden" name="product_name" value="<%=product.getProduct_name() %>">
+	                	<input type="hidden" name="price" value="<%=product.getPrice() %>">
+	                	
+		                <div class="col-lg-6">
+		                    <div class="product__details__text">
+		                        <h3><%=product.getProduct_name() %> <span>Brand: <%=product.getBrand() %></span></h3>
+		                        <div class="rating">
+		                            <i class="fa fa-star"></i>
+		                            <i class="fa fa-star"></i>
+		                            <i class="fa fa-star"></i>
+		                            <i class="fa fa-star"></i>
+		                            <i class="fa fa-star"></i>
+		                            <span>( 138 reviews )</span>
+		                        </div>
+		                        <div class="product__details__price"><%=MoneyConverter.format(product.getPrice()) %> <span><%=MoneyConverter.format(product.getDiscount()) %></span></div>
+		                        <p>Nemo enim ipsam voluptatem quia aspernatur aut odit aut loret fugit, sed quia consequuntur
+		                        magni lores eos qui ratione voluptatem sequi nesciunt.</p>
+		                        <div class="product__details__button">
+		                            <div class="quantity">
+		                                <span>Quantity:</span>
+		                                <div class="pro-qty">
+		                                    <input type="text" name="ea" value="1">
+		                                </div>
+		                            </div>
+		                            <a href="javascript:addCart(<%=product.getProduct_id()%>)" class="cart-btn"><span class="icon_bag_alt"></span> Add to cart</a>
+		                            <ul>
+		                                <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+		                                <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
+		                            </ul>
+		                        </div>
+		                        <div class="product__details__widget">
+		                            <ul>
+		                                <li>
+		                                    <span>Availability:</span>
+		                                    <div class="stock__checkbox">
+		                                        <label for="stockin">
+		                                            In Stock
+		                                            <input type="checkbox" id="stockin">
+		                                            <span class="checkmark"></span>
+		                                        </label>
+		                                    </div>
+		                                </li>
+		                                <li>
+		                                    <span>Available color:</span>
+		                                    <div class="color__checkbox">
+												<%for(Color color : product.getColorList()){%>
+		                                        <label for="<%=color.getColor_name() %>">
+		                                            <input type="radio" name="color__radio" id="<%=color.getColor_name() %>" checked="">
+		                                            <span class="checkmark"></span>
+		                                        </label>
+												<%} %>	
+		                                    </div>
+		                                </li>
+		                                <li>
+		                                    <span>Available size:</span>
+		                                    <div class="size__btn">
+		           								<%for( Size size : product.getSizeList()){%>                             
+		                                        <label for="<%=size.getSize_name() %>-btn" class="active">
+		                                            <input type="radio" id="<%=size.getSize_name() %>-btn">
+		                                            <%=size.getSize_name() %>
+		                                        </label>
+												<%} %>
+		                                    </div>
+		                                </li>
+		                                <li>
+		                                    <span>Promotions:</span>
+		                                    <p>Free shipping</p>
+		                                </li>
+		                            </ul>
+		                        </div>
+		                    </div>
+		                </div>
+		                
+	                </form>
+	                
 	                <div class="col-lg-12">
 	                    <div class="product__details__tab">
 	                        <ul class="nav nav-tabs" role="tablist">
@@ -195,17 +202,8 @@
 	                        </ul>
 	                        <div class="tab-content">
 	                            <div class="tab-pane active" id="tabs-1" role="tabpanel">
-	                                <h6><%=product.getDetail() %></h6>
-	                                <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed
-	                                    quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt loret.
-	                                    Neque porro lorem quisquam est, qui dolorem ipsum quia dolor si. Nemo enim ipsam
-	                                    voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed quia ipsu
-	                                    consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Nulla
-	                                consequat massa quis enim.</p>
-	                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
-	                                    dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
-	                                    nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
-	                                quis, sem.</p>
+	                                <h6>Description</h6>
+	                                <p><%=product.getDetail()%></p>
 	                            </div>
 	                            <div class="tab-pane" id="tabs-2" role="tabpanel">
 	                                <h6>Specification</h6>
@@ -349,38 +347,61 @@
 	<!-- Js Plugins -->
 	<%@ include file="../inc/footer_link.jsp" %>
 	
-	<script >
+	<script>
+	
+	//전통적으로 콜백 함수 사용 시, 유지보수를 저해하는 현상...
+	/*
+	addEventListener("load", function(){
+		$("#bt").click(function(){
+			$.ajax({
+				url:"/댓글게시판 상세글요청",
+				method:"",
+				success:function(result, status, xhr){
+					$.ajax("/comments/list", function(){
+						$.ajax("/like", function(){
+							
+						});
+					});
+				},
+				error:function(xhr, status, err){
+					
+				}
+			});
+		});		
+	});
+	*/
+	
+	function addCart(product_id){
+		//장바구니 담기 요청을 비동기 방식으로 진행 
+		let p = new Promise(function(resolve , reject){
+			$.ajax({
+				url:"/cart/add",
+				method:"POST",
+				//파라미터를 개발자가 일일이 명시하지 않고, form에 속한 컴포넌트들을 대상으로 전송할수 있는 파라미터 문자열로 대신 처리해주는 JQuery Ajax의 기술이 있음
+				data:$("#detail-form").serialize() , 
+				//data:"product_id="+product_id+"&product_name="+$("input[name='product_name']").val()+"&price="+$("input[name='price']").val()+"&ea="+$("input[name='ea']").val() , //post 방식의 전송시 파라미터 문자열을 대입
+				success:function(result, status, xhr){
+					//비동기 요청이 성공했음을 Promise에게 알려주어야 하므로,  resolve()호출 			
+					resolve(result.msg);
+				},
+				error:function(xhr, status, err){
+					//비동기 요청이 실패했음을 Promise에게 알려주어야 하므로,  reject()호출
+					let obj=JSON.parse(xhr.responseText);
+					reject(obj.msg);
+				}
+			});			
+		});
 		
-		// 전통적으로 콜백 함수 사용시 , 유지 보수를 저해하는 현상...
-		function addCart(product_id){
-			//promise 사용법(javascript:~~) 장바구니 담기 요청을 비동기 방식으로 진행
-			let p = new Promise(function(resolve,reject){
-				$.ajax({
-					url:"/cart/add?product_id="+product_id,
-					method:"Get",
-					success:function(result,status,xhr){
-						// 비동기 요청이 성공했음을 Promise에게 알려주어야 하므로, resolve()호출
-						resolve(result.msg);
-						
-					},
-					error:function(xhr,status,err){
-						// 비동기 요청이 실패했음을 Promise에게 알려주어야 하므로, reject()호출
-						reject(err);
-						
-					}
-				
-				});
-			});
-			
-			p.then(function(result){
-				confirm(result+"\n장바구니로 이동하시겠어요?");
-			});
-			p.catch(function(err){
-				alert(err);
-			});
-			
-			
-		}
+		p.then(function(msg){
+			 if(confirm(msg+"\n장바구니로 이동하시겠어요?")){
+				 location.href="/cart/main";
+			 }
+		});
+		
+		p.catch(function(msg){
+			alert(msg);
+		});
+	}
 	</script>
 </body>
 

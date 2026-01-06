@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import com.ch.shop.dto.Member;
 import com.ch.shop.exception.MemberException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Repository
 public class MybatisMemberDAO implements MemberDAO{
 	
@@ -15,30 +18,34 @@ public class MybatisMemberDAO implements MemberDAO{
 	
 	@Override
 	public Member findByProvider(Member member) {
-
-		return sqlSessionTemplate.selectOne("Member.findByProvider",member);
-	}
+		return sqlSessionTemplate.selectOne("Member.findByProvider", member);
+	}	
 	
 	@Override
-	public void insert(Member member) throws MemberException{	 //서비스에게 예외 전달
+	public void insert(Member member) throws MemberException{//서비스에게 예외 전달 
 		try {
-			sqlSessionTemplate.insert("Member.insert",member);
+			sqlSessionTemplate.insert("Member.insert", member);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new MemberException("회원 insert 실패" ,e);
+			throw new MemberException("회원 insert 실패 ", e);
 		}
-		
 	}
 
 	@Override
 	public void update(Member member) throws MemberException{
 		try {
-			sqlSessionTemplate.update("Member.update",member);
+			int updated=sqlSessionTemplate.update("Member.update", member);
+			if(updated >0) {
+				log.debug("회원정보 업데이트 함");				
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new MemberException("회원정보 수정 실패" ,e);
+			throw new MemberException("회원정보 수정 실패", e);
 		}
 	}
+
+
+
 
 
 }
