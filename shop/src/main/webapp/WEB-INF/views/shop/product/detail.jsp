@@ -53,6 +53,22 @@
     <!-- Header Section Begin -->
     <%@ include file="../inc/header.jsp" %>
     <!-- Header Section End -->
+    
+    <!-- breadcrumb-option 시작 -->
+	<div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <span>상품 상세보기</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb-option 끝 -->
+    
 	
 	<!-- 상품 상세 Begin -->
 	<section class="product-details spad">
@@ -116,7 +132,7 @@
 	                                    <input type="text" value="1">
 	                                <span class="inc qtybtn">+</span></div>
 	                            </div>
-	                            <a href="#" class="cart-btn"><span class="icon_bag_alt"></span> Add to cart</a>
+	                            <a href="javascript:addCart(<%=product.getProduct_id()%>)" class="cart-btn"><span class="icon_bag_alt"></span> Add to cart</a>
 	                            <ul>
 	                                <li><a href="#"><span class="icon_heart_alt"></span></a></li>
 	                                <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
@@ -332,6 +348,40 @@
 	
 	<!-- Js Plugins -->
 	<%@ include file="../inc/footer_link.jsp" %>
+	
+	<script >
+		
+		// 전통적으로 콜백 함수 사용시 , 유지 보수를 저해하는 현상...
+		function addCart(product_id){
+			//promise 사용법(javascript:~~) 장바구니 담기 요청을 비동기 방식으로 진행
+			let p = new Promise(function(resolve,reject){
+				$.ajax({
+					url:"/cart/add?product_id="+product_id,
+					method:"Get",
+					success:function(result,status,xhr){
+						// 비동기 요청이 성공했음을 Promise에게 알려주어야 하므로, resolve()호출
+						resolve(result.msg);
+						
+					},
+					error:function(xhr,status,err){
+						// 비동기 요청이 실패했음을 Promise에게 알려주어야 하므로, reject()호출
+						reject(err);
+						
+					}
+				
+				});
+			});
+			
+			p.then(function(result){
+				confirm(result+"\n장바구니로 이동하시겠어요?");
+			});
+			p.catch(function(err){
+				alert(err);
+			});
+			
+			
+		}
+	</script>
 </body>
 
 </html>

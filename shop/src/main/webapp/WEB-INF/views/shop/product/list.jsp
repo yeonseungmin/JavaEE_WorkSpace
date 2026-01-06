@@ -52,6 +52,22 @@
     <%@ include file="../inc/header.jsp" %>
     <!-- Header Section End -->
 	
+	<!-- breadcrumb-option 시작 -->
+	<div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <span>상품 목록</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb-option 끝 -->
+    
+	
 	<!-- 상품 목록 Begin -->
 	<section class="shop spad">
 		<div class="container">
