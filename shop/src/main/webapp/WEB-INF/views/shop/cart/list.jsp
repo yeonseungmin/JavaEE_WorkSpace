@@ -1,10 +1,4 @@
-<%@page import="com.ch.shop.dto.Cart"%>
-<%@page import="com.ch.shop.util.MoneyConverter"%>
 <%@ page contentType="text/html; charset=UTF-8"%>
-<%@ page import="com.ch.shop.dto.Product" %>
-<%  
-	List<Cart> cartList =(List)request.getAttribute("cartList");
-%>
 
 <!DOCTYPE html>
 <html lang="zxx">
@@ -83,25 +77,26 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            <%for(Cart cart : cartList){ %>
-                                <tr>
-                                    <td class="cart__product__item">
-                                        <img src="img/shop-cart/cp-1.jpg" alt="">
-                                        <div class="cart__product__item__title">
-                                            <h6><%=cart.getProduct_name() %></h6>
-                                        </div>
-                                    </td>
-                                    <td class="cart__price"><%=MoneyConverter.format(cart.getPrice()) %></td>
-                                    <td class="cart__quantity">
-                                        <div class="pro-qty"><span class="dec qtybtn">-</span>
-                                            <input type="text" value=<%=cart.getEa()%>>
-                                        <span class="inc qtybtn">+</span></div>
-                                    </td>
-                                    <td class="cart__total"><%=MoneyConverter.format(cart.getPrice()*cart.getEa()) %></td>
-                                    <td class="cart__close"><span class="icon_close"></span></td>
-                               	</tr>
-                              <%} %>
+                            <!-- 아래의 id="app"으로 아래코드와 실시간 연결, 안에 있는 영역을 Vue의 영향력 아래에 두겠다. -->
+                            <tbody id="app">
+                            
+	                                <tr v-for=" index in cartList">
+	                                    <td class="cart__product__item">
+	                                        <img src="img/shop-cart/cp-1.jpg" alt="">
+	                                        <div class="cart__product__item__title">
+	                                            <h6>상품명</h6>
+	                                        </div>
+	                                    </td>
+	                                    <td class="cart__price">개당가격</td>
+	                                    <td class="cart__quantity">
+	                                        <div class="pro-qty"><span class="dec qtybtn">-</span>
+	                                            <input type="text" value=갯수>
+	                                        <span class="inc qtybtn">+</span></div>
+	                                    </td>
+	                                    <td class="cart__total">총가격</td>
+	                                    <td class="cart__close"><span class="icon_close"></span></td>
+	                               	</tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -154,6 +149,30 @@
 	
 	<!-- Js Plugins -->
 	<%@ include file="../inc/footer_link.jsp" %>
+	
+	<!-- Vue 시작코드 -->
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<!-- Vue를 이용하면 개발자가 DOM 렌더링 시 (tag+="<tr>"; ... ) 효율적인 처리가 가능하다. -->
+<script>
+	//  뷰 애플리케이션 객체를 생성하고, 원하는 렌더링 영역인 div="app" 와 연결하자.
+	const app = Vue.createApp({
+			//아래의 data() 메서드는 뷰 영역에서 사용할 데이터를 반환하는 역할
+			data(){
+				return{// 뷰 렌더링 영역에서 사용될 데이터를 반환
+					cartList : 3
+					
+				}
+			}
+		});
+
+	let vm = app.mount('#app');
+
+	//비동기 방식으로 장바구니 목록을 가져오자
+	function renderList(){
+
+	}
+	
+</script>
 </body>
 
 </html>

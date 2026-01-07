@@ -13,6 +13,10 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -22,6 +26,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+import redis.clients.jedis.JedisPoolConfig;
 
 
 // 이 클래스는 로직 작성용이 아니라 , 전통적으로 사용해왔던 스프링의 빈을 등록하는 용도의 xml 을 대신하기 위한 자바 클래스이다.
@@ -144,7 +150,48 @@ public class RootConfig extends WebMvcConfigurerAdapter{
 	}
 	
 	
+	/*----------------------------------------------------
+	  ★★★★★★★★★Redis Database 관련 Bean 등록 ★★★★★★★★★★★★
+	----------------------------------------------------*/
+	@Bean
+	public JedisPoolConfig jedisPoolConfig() {
+		JedisPoolConfig config = new JedisPoolConfig();
+		config.setMaxTotal(50);
+		config.setMaxIdle(10);
+		config.setMinIdle(5);
+		
+		return config;
+	}
 	
 	
+	/*----------------------------------------------------
+	  Redis 접속 Bean 등록
+	----------------------------------------------------*/
+	@Bean
+	public RedisConnectionFactory redisConnectionFactory() {
+		JedisConnectionFactory factory = new JedisConnectionFactory();
+		factory.setHostName("localhost");
+		factory.setPort(6379);//접속 port
+		factory.setUsePool(true);
+		factory.setPoolConfig(jedisPoolConfig());
+		
+		return factory;
+	}
+	
+	
+	/*----------------------------------------------------
+	  CRUD 명령어 날리는 객체 Bean 등록
+	  DAO 에서 주입받아서 명령을 수행
+	----------------------------------------------------*/
+	@Bean
+	public RedisTemplate<String, String> redisTemplate(){
+		RedisTemplate<String, String> template = new RedisTemplate<String, String>();
+		template.setConnectionFactory(redisConnectionFactory());
+		template.setKeySerializer(new StringRedisSerializer());
+		template.setHashKeySerializer(new StringRedisSerializer());
+		template.setHashValueSerializer(new StringRedisSerializer());
+		
+		return template;
+	}
 	
 }

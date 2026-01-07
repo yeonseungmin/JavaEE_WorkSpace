@@ -375,7 +375,8 @@
 		//장바구니 담기 요청을 비동기 방식으로 진행 
 		let p = new Promise(function(resolve , reject){
 			$.ajax({
-				url:"/cart/add",
+				//url:"/cart/add",세션 기반 컨트롤러에 요청
+				url:"/cart/regist",
 				method:"POST",
 				//파라미터를 개발자가 일일이 명시하지 않고, form에 속한 컴포넌트들을 대상으로 전송할수 있는 파라미터 문자열로 대신 처리해주는 JQuery Ajax의 기술이 있음
 				data:$("#detail-form").serialize() , 
