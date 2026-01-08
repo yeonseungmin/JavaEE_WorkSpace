@@ -375,8 +375,8 @@
 		//장바구니 담기 요청을 비동기 방식으로 진행 
 		let p = new Promise(function(resolve , reject){
 			$.ajax({
-				//url:"/cart/add",세션 기반 컨트롤러에 요청
-				url:"/cart/regist",
+				//url:"/cart/add", 세션기반 컨트롤러에 요청 
+				url:"/cart/regist", //redis 기반 컨트롤러에 요청
 				method:"POST",
 				//파라미터를 개발자가 일일이 명시하지 않고, form에 속한 컴포넌트들을 대상으로 전송할수 있는 파라미터 문자열로 대신 처리해주는 JQuery Ajax의 기술이 있음
 				data:$("#detail-form").serialize() , 
@@ -395,7 +395,8 @@
 		
 		p.then(function(msg){
 			 if(confirm(msg+"\n장바구니로 이동하시겠어요?")){
-				 location.href="/cart/main";
+				 //location.href="/cart/main";  세션기반의 장바구니 목록 요청
+				 location.href="/cart/list"; //RedistCartController에게 요청 
 			 }
 		});
 		

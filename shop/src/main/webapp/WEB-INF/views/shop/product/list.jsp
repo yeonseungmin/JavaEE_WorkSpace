@@ -51,8 +51,8 @@
     <!-- Header Section Begin -->
     <%@ include file="../inc/header.jsp" %>
     <!-- Header Section End -->
-	
-	<!-- breadcrumb-option 시작 -->
+    
+	<!-- BreadCrumb Begin -->
 	<div class="breadcrumb-option">
         <div class="container">
             <div class="row">
@@ -64,9 +64,8 @@
                 </div>
             </div>
         </div>
-    </div>
-    <!-- breadcrumb-option 끝 -->
-    
+    </div>	
+    <!-- BreadCrumb End -->
 	
 	<!-- 상품 목록 Begin -->
 	<section class="shop spad">
